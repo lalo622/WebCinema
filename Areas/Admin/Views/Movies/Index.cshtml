@@ -1,0 +1,92 @@
+﻿@model IEnumerable<WebCinema.Models.Movie>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<h2>Danh Sách Phim</h2>
+
+
+<div class="mb-3 text-end">
+    @Html.ActionLink("Thêm mới", "Create", null, new { @class = "btn btn-primary" })
+</div>
+
+<table class="table table-bordered align-middle text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Hình ảnh</th>
+            <th>Thông tin phim</th>
+            <th>Hoạt động</th>
+            <th>Nổi bật</th>
+            <th>Chức năng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int stt = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@stt</td>
+
+                <!-- Hình ảnh -->
+                <td>
+                    <img src="@item.ImageURL" style="width: 100px; height: 140px; object-fit: cover;" />
+                </td>
+
+                <!-- Thông tin phim -->
+                <td class="text-start">
+                    <strong class="fs-5">@item.Title</strong><br />
+                    <span>Đạo diễn: @item.Director</span><br />
+                    <span>Thể loại: @item.Genre</span><br />
+                    <span>Khởi chiếu: @item.ReleaseDate.ToString("dd/MM/yyyy")</span><br />
+                    <span>Kết thúc: @item.EndDate.ToString("dd/MM/yyyy")</span><br />
+                    <span>Độ tuổi: @item.AgeRating+</span>
+                </td>
+                <!-- Hoạt động -->
+                @*<td>
+                        <input type="checkbox" @(item.IsActive ? "checked" : "") onchange="toggleActive(@item.MovieID)" />
+                    </td>*@
+                <!-- Chức năng -->
+                <td>
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.MovieID }, new { @class = "btn btn-sm btn-warning mb-1" })<br />
+                    @Html.ActionLink("Chi tiết", "Details", new { id = item.MovieID }, new { @class = "btn btn-sm btn-info mb-1" })<br />
+                    @Html.ActionLink("Xóa", "#", null, new
+                    {
+                    @class = "btn btn-sm btn-danger",
+                    data_bs_toggle = "modal",
+                    data_bs_target = "#deleteModal",
+                    onclick = $"setDeleteAction('{Url.Action("Delete", new { id = item.MovieID })}')"
+                    })
+                </td>
+            </tr>
+            stt++;
+        }
+    </tbody>
+    <!-- Modal Xác nhận xóa -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Xác nhận xóa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Bạn có chắc chắn muốn xóa phim này không?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <a id="deleteConfirmButton" href="#" class="btn btn-danger">Xóa</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</table>
+<script>
+    function setDeleteAction(deleteUrl) {
+        document.getElementById('deleteConfirmButton').href = deleteUrl;
+    }
+</script>

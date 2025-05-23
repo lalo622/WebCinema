@@ -1,0 +1,100 @@
+﻿@model WebCinema.Models.Movie
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Thông tin phim</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Tên Phim
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            Đạo diễn
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Director)
+        </dd>
+
+        <dt>
+            Ảnh
+        </dt>
+
+        <dd>
+        <dd>
+            <img src="@Model.ImageURL" alt="@Model.Title" style="max-width: 200px; height: auto;" />
+        </dd>
+        </dd>
+
+        <dt>
+            Diễn viên
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cast)
+        </dd>
+
+        <dt>
+            Ngày khởi chiếu
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReleaseDate)
+        </dd>
+
+        <dt>
+            NGày kết thúc
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EndDate)
+        </dd>
+
+        <dt>
+            Thời lượng
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Duration)
+        </dd>
+
+        <dt>
+            Thể loại
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Genre)
+        </dd>
+
+        <dt>
+            Độ tuổi
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AgeRating)
+        </dd>
+
+        <dt>
+            Mô tả
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Chỉnh sửa", "Edit", new { id = Model.MovieID }, new { @class = "btn btn-primary me-2" })
+    @Html.ActionLink("Quay lại", "Index", null, new { @class = "btn btn-primary" })
+</p>

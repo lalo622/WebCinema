@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="bebbc8d3ea0e40eab0cd52305d136f2f" Name="Diagram1">
+        <EntityTypeShape EntityType="WebCinemaModel.Cinema" Width="1.5" PointX="1.5" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.CinemaRoom" Width="1.5" PointX="1.5" PointY="17" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.Combo" Width="1.5" PointX="3" PointY="8.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.ComboFood" Width="1.5" PointX="5.25" PointY="10.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.Customer" Width="1.5" PointX="3" PointY="5.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.Food" Width="1.5" PointX="3" PointY="11.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.Movie" Width="1.5" PointX="1.5" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.Review" Width="1.5" PointX="6" PointY="5" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.Screening" Width="1.5" PointX="0.75" PointY="12.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.SeatTemplate" Width="1.5" PointX="1.5" PointY="23.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.sysdiagram" Width="1.5" PointX="7.75" PointY="1.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.Ticket" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.TicketFood" Width="1.5" PointX="5.25" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.User" Width="1.5" PointX="0.75" PointY="5" IsExpanded="true" />
+        <AssociationConnector Association="WebCinemaModel.FK__CinemaRoo__Cinem__412EB0B6" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__CinemaRoo__Templ__403A8C7D" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__Screening__RoomI__45F365D3" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__ComboFood__Combo__5DCAEF64" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__TicketFoo__Combo__6754599E" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__ComboFood__FoodI__5EBF139D" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK_Customer_User" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__TicketFoo__FoodI__66603565" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__Review__MovieID__6C190EBB" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__Screening__Movie__44FF419A" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__Review__UserID__6B24EA82" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__Ticket__Screenin__4F7CD00D" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__Ticket__UserID__5070F446" ManuallyRouted="false" />
+        <AssociationConnector Association="WebCinemaModel.FK__TicketFoo__Ticke__6383C8BA" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

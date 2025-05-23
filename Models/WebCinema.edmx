@@ -1,0 +1,1023 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="WebCinemaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Cinema">
+          <Key>
+            <PropertyRef Name="CinemaID" />
+          </Key>
+          <Property Name="CinemaID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Address" Type="nvarchar" MaxLength="200" />
+          <Property Name="Phone" Type="varchar" MaxLength="20" />
+          <Property Name="Status" Type="bit" />
+        </EntityType>
+        <EntityType Name="CinemaRoom">
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="RoomID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoomName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="RoomType" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="TemplateID" Type="int" />
+          <Property Name="CinemaID" Type="int" />
+          <Property Name="Status" Type="bit" />
+        </EntityType>
+        <EntityType Name="Combo">
+          <Key>
+            <PropertyRef Name="ComboID" />
+          </Key>
+          <Property Name="ComboID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ImageURL" Type="varchar" MaxLength="255" />
+          <Property Name="Description" Type="nvarchar" MaxLength="200" />
+          <Property Name="SalePrice" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ComboFood">
+          <Key>
+            <PropertyRef Name="ComboID" />
+            <PropertyRef Name="FoodID" />
+          </Key>
+          <Property Name="ComboID" Type="int" Nullable="false" />
+          <Property Name="FoodID" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Phone" Type="varchar" MaxLength="20" />
+          <Property Name="BirthDate" Type="date" />
+        </EntityType>
+        <EntityType Name="Food">
+          <Key>
+            <PropertyRef Name="FoodID" />
+          </Key>
+          <Property Name="FoodID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ImageURL" Type="varchar" MaxLength="255" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="50" />
+          <Property Name="Stock" Type="int" />
+        </EntityType>
+        <EntityType Name="Movie">
+          <Key>
+            <PropertyRef Name="MovieID" />
+          </Key>
+          <Property Name="MovieID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Director" Type="nvarchar" MaxLength="100" />
+          <Property Name="ImageURL" Type="varchar" MaxLength="255" />
+          <Property Name="Cast" Type="nvarchar(max)" />
+          <Property Name="ReleaseDate" Type="date" Nullable="false" />
+          <Property Name="EndDate" Type="date" Nullable="false" />
+          <Property Name="Duration" Type="int" Nullable="false" />
+          <Property Name="Genre" Type="nvarchar" MaxLength="100" />
+          <Property Name="AgeRating" Type="nvarchar" MaxLength="20" />
+          <Property Name="Description" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="Review">
+          <Key>
+            <PropertyRef Name="ReviewID" />
+          </Key>
+          <Property Name="ReviewID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="MovieID" Type="int" Nullable="false" />
+          <Property Name="Rating" Type="tinyint" Nullable="false" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="500" />
+          <Property Name="CreatedAt" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Screening">
+          <Key>
+            <PropertyRef Name="ScreeningID" />
+          </Key>
+          <Property Name="ScreeningID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MovieID" Type="int" Nullable="false" />
+          <Property Name="RoomID" Type="int" Nullable="false" />
+          <Property Name="ShowDate" Type="date" Nullable="false" />
+          <Property Name="StartTime" Type="time" Precision="7" Nullable="false" />
+          <Property Name="Status" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="SeatTemplate">
+          <Key>
+            <PropertyRef Name="TemplateID" />
+          </Key>
+          <Property Name="TemplateID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TemplateName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SeatMatrix" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="SeatTypes" Type="nvarchar" MaxLength="100" />
+          <Property Name="Description" Type="nvarchar" MaxLength="200" />
+          <Property Name="TotalSeats" Type="int" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ScreeningID" Type="int" Nullable="false" />
+          <Property Name="UserID" Type="int" Nullable="false" />
+          <Property Name="SeatNumber" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="BookingTime" Type="datetime" />
+          <Property Name="TotalPrice" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="PaymentStatus" Type="tinyint" />
+        </EntityType>
+        <EntityType Name="TicketFood">
+          <Key>
+            <PropertyRef Name="TicketFoodID" />
+          </Key>
+          <Property Name="TicketFoodID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TicketID" Type="int" Nullable="false" />
+          <Property Name="FoodID" Type="int" />
+          <Property Name="ComboID" Type="int" />
+          <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Price" Type="decimal" Precision="10" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Role" Type="tinyint" />
+        </EntityType>
+        <Association Name="FK__CinemaRoo__Cinem__412EB0B6">
+          <End Role="Cinema" Type="Self.Cinema" Multiplicity="0..1" />
+          <End Role="CinemaRoom" Type="Self.CinemaRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cinema">
+              <PropertyRef Name="CinemaID" />
+            </Principal>
+            <Dependent Role="CinemaRoom">
+              <PropertyRef Name="CinemaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CinemaRoo__Templ__403A8C7D">
+          <End Role="SeatTemplate" Type="Self.SeatTemplate" Multiplicity="0..1" />
+          <End Role="CinemaRoom" Type="Self.CinemaRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SeatTemplate">
+              <PropertyRef Name="TemplateID" />
+            </Principal>
+            <Dependent Role="CinemaRoom">
+              <PropertyRef Name="TemplateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ComboFood__Combo__5DCAEF64">
+          <End Role="Combo" Type="Self.Combo" Multiplicity="1" />
+          <End Role="ComboFood" Type="Self.ComboFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Combo">
+              <PropertyRef Name="ComboID" />
+            </Principal>
+            <Dependent Role="ComboFood">
+              <PropertyRef Name="ComboID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ComboFood__FoodI__5EBF139D">
+          <End Role="Food" Type="Self.Food" Multiplicity="1" />
+          <End Role="ComboFood" Type="Self.ComboFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Food">
+              <PropertyRef Name="FoodID" />
+            </Principal>
+            <Dependent Role="ComboFood">
+              <PropertyRef Name="FoodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Review__MovieID__6C190EBB">
+          <End Role="Movie" Type="Self.Movie" Multiplicity="1" />
+          <End Role="Review" Type="Self.Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Movie">
+              <PropertyRef Name="MovieID" />
+            </Principal>
+            <Dependent Role="Review">
+              <PropertyRef Name="MovieID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Review__UserID__6B24EA82">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Review" Type="Self.Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Review">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Screening__Movie__44FF419A">
+          <End Role="Movie" Type="Self.Movie" Multiplicity="1" />
+          <End Role="Screening" Type="Self.Screening" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Movie">
+              <PropertyRef Name="MovieID" />
+            </Principal>
+            <Dependent Role="Screening">
+              <PropertyRef Name="MovieID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Screening__RoomI__45F365D3">
+          <End Role="CinemaRoom" Type="Self.CinemaRoom" Multiplicity="1" />
+          <End Role="Screening" Type="Self.Screening" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CinemaRoom">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="Screening">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Ticket__Screenin__4F7CD00D">
+          <End Role="Screening" Type="Self.Screening" Multiplicity="1" />
+          <End Role="Ticket" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Screening">
+              <PropertyRef Name="ScreeningID" />
+            </Principal>
+            <Dependent Role="Ticket">
+              <PropertyRef Name="ScreeningID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Ticket__UserID__5070F446">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Ticket" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Ticket">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TicketFoo__Combo__6754599E">
+          <End Role="Combo" Type="Self.Combo" Multiplicity="0..1" />
+          <End Role="TicketFood" Type="Self.TicketFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Combo">
+              <PropertyRef Name="ComboID" />
+            </Principal>
+            <Dependent Role="TicketFood">
+              <PropertyRef Name="ComboID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TicketFoo__FoodI__66603565">
+          <End Role="Food" Type="Self.Food" Multiplicity="0..1" />
+          <End Role="TicketFood" Type="Self.TicketFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Food">
+              <PropertyRef Name="FoodID" />
+            </Principal>
+            <Dependent Role="TicketFood">
+              <PropertyRef Name="FoodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TicketFoo__Ticke__6383C8BA">
+          <End Role="Ticket" Type="Self.Ticket" Multiplicity="1" />
+          <End Role="TicketFood" Type="Self.TicketFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ticket">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="TicketFood">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customer_User">
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WebCinemaModelStoreContainer">
+          <EntitySet Name="Cinema" EntityType="Self.Cinema" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CinemaRoom" EntityType="Self.CinemaRoom" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Combo" EntityType="Self.Combo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ComboFood" EntityType="Self.ComboFood" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Food" EntityType="Self.Food" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Movie" EntityType="Self.Movie" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Review" EntityType="Self.Review" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Screening" EntityType="Self.Screening" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SeatTemplate" EntityType="Self.SeatTemplate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TicketFood" EntityType="Self.TicketFood" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__CinemaRoo__Cinem__412EB0B6" Association="Self.FK__CinemaRoo__Cinem__412EB0B6">
+            <End Role="Cinema" EntitySet="Cinema" />
+            <End Role="CinemaRoom" EntitySet="CinemaRoom" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CinemaRoo__Templ__403A8C7D" Association="Self.FK__CinemaRoo__Templ__403A8C7D">
+            <End Role="SeatTemplate" EntitySet="SeatTemplate" />
+            <End Role="CinemaRoom" EntitySet="CinemaRoom" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ComboFood__Combo__5DCAEF64" Association="Self.FK__ComboFood__Combo__5DCAEF64">
+            <End Role="Combo" EntitySet="Combo" />
+            <End Role="ComboFood" EntitySet="ComboFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ComboFood__FoodI__5EBF139D" Association="Self.FK__ComboFood__FoodI__5EBF139D">
+            <End Role="Food" EntitySet="Food" />
+            <End Role="ComboFood" EntitySet="ComboFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Review__MovieID__6C190EBB" Association="Self.FK__Review__MovieID__6C190EBB">
+            <End Role="Movie" EntitySet="Movie" />
+            <End Role="Review" EntitySet="Review" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Review__UserID__6B24EA82" Association="Self.FK__Review__UserID__6B24EA82">
+            <End Role="User" EntitySet="User" />
+            <End Role="Review" EntitySet="Review" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Screening__Movie__44FF419A" Association="Self.FK__Screening__Movie__44FF419A">
+            <End Role="Movie" EntitySet="Movie" />
+            <End Role="Screening" EntitySet="Screening" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Screening__RoomI__45F365D3" Association="Self.FK__Screening__RoomI__45F365D3">
+            <End Role="CinemaRoom" EntitySet="CinemaRoom" />
+            <End Role="Screening" EntitySet="Screening" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Ticket__Screenin__4F7CD00D" Association="Self.FK__Ticket__Screenin__4F7CD00D">
+            <End Role="Screening" EntitySet="Screening" />
+            <End Role="Ticket" EntitySet="Ticket" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Ticket__UserID__5070F446" Association="Self.FK__Ticket__UserID__5070F446">
+            <End Role="User" EntitySet="User" />
+            <End Role="Ticket" EntitySet="Ticket" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TicketFoo__Combo__6754599E" Association="Self.FK__TicketFoo__Combo__6754599E">
+            <End Role="Combo" EntitySet="Combo" />
+            <End Role="TicketFood" EntitySet="TicketFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TicketFoo__FoodI__66603565" Association="Self.FK__TicketFoo__FoodI__66603565">
+            <End Role="Food" EntitySet="Food" />
+            <End Role="TicketFood" EntitySet="TicketFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TicketFoo__Ticke__6383C8BA" Association="Self.FK__TicketFoo__Ticke__6383C8BA">
+            <End Role="Ticket" EntitySet="Ticket" />
+            <End Role="TicketFood" EntitySet="TicketFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_User" Association="Self.FK_Customer_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Customer" EntitySet="Customer" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="WebCinemaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Cinema">
+          <Key>
+            <PropertyRef Name="CinemaID" />
+          </Key>
+          <Property Name="CinemaID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="CinemaRooms" Relationship="Self.FK__CinemaRoo__Cinem__412EB0B6" FromRole="Cinema" ToRole="CinemaRoom" />
+        </EntityType>
+        <EntityType Name="CinemaRoom">
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="RoomID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="RoomType" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TemplateID" Type="Int32" />
+          <Property Name="CinemaID" Type="Int32" />
+          <Property Name="Status" Type="Boolean" />
+          <NavigationProperty Name="Cinema" Relationship="Self.FK__CinemaRoo__Cinem__412EB0B6" FromRole="CinemaRoom" ToRole="Cinema" />
+          <NavigationProperty Name="SeatTemplate" Relationship="Self.FK__CinemaRoo__Templ__403A8C7D" FromRole="CinemaRoom" ToRole="SeatTemplate" />
+          <NavigationProperty Name="Screenings" Relationship="Self.FK__Screening__RoomI__45F365D3" FromRole="CinemaRoom" ToRole="Screening" />
+        </EntityType>
+        <EntityType Name="Combo">
+          <Key>
+            <PropertyRef Name="ComboID" />
+          </Key>
+          <Property Name="ComboID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ImageURL" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="SalePrice" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <NavigationProperty Name="ComboFoods" Relationship="Self.FK__ComboFood__Combo__5DCAEF64" FromRole="Combo" ToRole="ComboFood" />
+          <NavigationProperty Name="TicketFoods" Relationship="Self.FK__TicketFoo__Combo__6754599E" FromRole="Combo" ToRole="TicketFood" />
+        </EntityType>
+        <EntityType Name="ComboFood">
+          <Key>
+            <PropertyRef Name="ComboID" />
+            <PropertyRef Name="FoodID" />
+          </Key>
+          <Property Name="ComboID" Type="Int32" Nullable="false" />
+          <Property Name="FoodID" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Combo" Relationship="Self.FK__ComboFood__Combo__5DCAEF64" FromRole="ComboFood" ToRole="Combo" />
+          <NavigationProperty Name="Food" Relationship="Self.FK__ComboFood__FoodI__5EBF139D" FromRole="ComboFood" ToRole="Food" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Phone" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Customer_User" FromRole="Customer" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Food">
+          <Key>
+            <PropertyRef Name="FoodID" />
+          </Key>
+          <Property Name="FoodID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ImageURL" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Stock" Type="Int32" />
+          <NavigationProperty Name="ComboFoods" Relationship="Self.FK__ComboFood__FoodI__5EBF139D" FromRole="Food" ToRole="ComboFood" />
+          <NavigationProperty Name="TicketFoods" Relationship="Self.FK__TicketFoo__FoodI__66603565" FromRole="Food" ToRole="TicketFood" />
+        </EntityType>
+        <EntityType Name="Movie">
+          <Key>
+            <PropertyRef Name="MovieID" />
+          </Key>
+          <Property Name="MovieID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Director" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ImageURL" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="Cast" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ReleaseDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Duration" Type="Int32" Nullable="false" />
+          <Property Name="Genre" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AgeRating" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Reviews" Relationship="Self.FK__Review__MovieID__6C190EBB" FromRole="Movie" ToRole="Review" />
+          <NavigationProperty Name="Screenings" Relationship="Self.FK__Screening__Movie__44FF419A" FromRole="Movie" ToRole="Screening" />
+        </EntityType>
+        <EntityType Name="Review">
+          <Key>
+            <PropertyRef Name="ReviewID" />
+          </Key>
+          <Property Name="ReviewID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="MovieID" Type="Int32" Nullable="false" />
+          <Property Name="Rating" Type="Byte" Nullable="false" />
+          <Property Name="Comment" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedAt" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Movie" Relationship="Self.FK__Review__MovieID__6C190EBB" FromRole="Review" ToRole="Movie" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Review__UserID__6B24EA82" FromRole="Review" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Screening">
+          <Key>
+            <PropertyRef Name="ScreeningID" />
+          </Key>
+          <Property Name="ScreeningID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MovieID" Type="Int32" Nullable="false" />
+          <Property Name="RoomID" Type="Int32" Nullable="false" />
+          <Property Name="ShowDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="StartTime" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="Status" Type="Byte" />
+          <NavigationProperty Name="CinemaRoom" Relationship="Self.FK__Screening__RoomI__45F365D3" FromRole="Screening" ToRole="CinemaRoom" />
+          <NavigationProperty Name="Movie" Relationship="Self.FK__Screening__Movie__44FF419A" FromRole="Screening" ToRole="Movie" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK__Ticket__Screenin__4F7CD00D" FromRole="Screening" ToRole="Ticket" />
+        </EntityType>
+        <EntityType Name="SeatTemplate">
+          <Key>
+            <PropertyRef Name="TemplateID" />
+          </Key>
+          <Property Name="TemplateID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TemplateName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SeatMatrix" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SeatTypes" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="TotalSeats" Type="Int32" />
+          <NavigationProperty Name="CinemaRooms" Relationship="Self.FK__CinemaRoo__Templ__403A8C7D" FromRole="SeatTemplate" ToRole="CinemaRoom" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Ticket">
+          <Key>
+            <PropertyRef Name="TicketID" />
+          </Key>
+          <Property Name="TicketID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ScreeningID" Type="Int32" Nullable="false" />
+          <Property Name="UserID" Type="Int32" Nullable="false" />
+          <Property Name="SeatNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="BookingTime" Type="DateTime" Precision="3" />
+          <Property Name="TotalPrice" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <Property Name="PaymentStatus" Type="Byte" />
+          <NavigationProperty Name="Screening" Relationship="Self.FK__Ticket__Screenin__4F7CD00D" FromRole="Ticket" ToRole="Screening" />
+          <NavigationProperty Name="User" Relationship="Self.FK__Ticket__UserID__5070F446" FromRole="Ticket" ToRole="User" />
+          <NavigationProperty Name="TicketFoods" Relationship="Self.FK__TicketFoo__Ticke__6383C8BA" FromRole="Ticket" ToRole="TicketFood" />
+        </EntityType>
+        <EntityType Name="TicketFood">
+          <Key>
+            <PropertyRef Name="TicketFoodID" />
+          </Key>
+          <Property Name="TicketFoodID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TicketID" Type="Int32" Nullable="false" />
+          <Property Name="FoodID" Type="Int32" />
+          <Property Name="ComboID" Type="Int32" />
+          <Property Name="Quantity" Type="Int32" Nullable="false" />
+          <Property Name="Price" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Combo" Relationship="Self.FK__TicketFoo__Combo__6754599E" FromRole="TicketFood" ToRole="Combo" />
+          <NavigationProperty Name="Food" Relationship="Self.FK__TicketFoo__FoodI__66603565" FromRole="TicketFood" ToRole="Food" />
+          <NavigationProperty Name="Ticket" Relationship="Self.FK__TicketFoo__Ticke__6383C8BA" FromRole="TicketFood" ToRole="Ticket" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Role" Type="Byte" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK_Customer_User" FromRole="User" ToRole="Customer" />
+          <NavigationProperty Name="Reviews" Relationship="Self.FK__Review__UserID__6B24EA82" FromRole="User" ToRole="Review" />
+          <NavigationProperty Name="Tickets" Relationship="Self.FK__Ticket__UserID__5070F446" FromRole="User" ToRole="Ticket" />
+        </EntityType>
+        <Association Name="FK__CinemaRoo__Cinem__412EB0B6">
+          <End Role="Cinema" Type="Self.Cinema" Multiplicity="0..1" />
+          <End Role="CinemaRoom" Type="Self.CinemaRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Cinema">
+              <PropertyRef Name="CinemaID" />
+            </Principal>
+            <Dependent Role="CinemaRoom">
+              <PropertyRef Name="CinemaID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__CinemaRoo__Templ__403A8C7D">
+          <End Role="SeatTemplate" Type="Self.SeatTemplate" Multiplicity="0..1" />
+          <End Role="CinemaRoom" Type="Self.CinemaRoom" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SeatTemplate">
+              <PropertyRef Name="TemplateID" />
+            </Principal>
+            <Dependent Role="CinemaRoom">
+              <PropertyRef Name="TemplateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Screening__RoomI__45F365D3">
+          <End Role="CinemaRoom" Type="Self.CinemaRoom" Multiplicity="1" />
+          <End Role="Screening" Type="Self.Screening" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CinemaRoom">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="Screening">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ComboFood__Combo__5DCAEF64">
+          <End Role="Combo" Type="Self.Combo" Multiplicity="1" />
+          <End Role="ComboFood" Type="Self.ComboFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Combo">
+              <PropertyRef Name="ComboID" />
+            </Principal>
+            <Dependent Role="ComboFood">
+              <PropertyRef Name="ComboID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TicketFoo__Combo__6754599E">
+          <End Role="Combo" Type="Self.Combo" Multiplicity="0..1" />
+          <End Role="TicketFood" Type="Self.TicketFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Combo">
+              <PropertyRef Name="ComboID" />
+            </Principal>
+            <Dependent Role="TicketFood">
+              <PropertyRef Name="ComboID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__ComboFood__FoodI__5EBF139D">
+          <End Role="Food" Type="Self.Food" Multiplicity="1" />
+          <End Role="ComboFood" Type="Self.ComboFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Food">
+              <PropertyRef Name="FoodID" />
+            </Principal>
+            <Dependent Role="ComboFood">
+              <PropertyRef Name="FoodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Customer_User">
+          <End Role="User" Type="Self.User" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TicketFoo__FoodI__66603565">
+          <End Role="Food" Type="Self.Food" Multiplicity="0..1" />
+          <End Role="TicketFood" Type="Self.TicketFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Food">
+              <PropertyRef Name="FoodID" />
+            </Principal>
+            <Dependent Role="TicketFood">
+              <PropertyRef Name="FoodID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Review__MovieID__6C190EBB">
+          <End Role="Movie" Type="Self.Movie" Multiplicity="1" />
+          <End Role="Review" Type="Self.Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Movie">
+              <PropertyRef Name="MovieID" />
+            </Principal>
+            <Dependent Role="Review">
+              <PropertyRef Name="MovieID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Screening__Movie__44FF419A">
+          <End Role="Movie" Type="Self.Movie" Multiplicity="1" />
+          <End Role="Screening" Type="Self.Screening" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Movie">
+              <PropertyRef Name="MovieID" />
+            </Principal>
+            <Dependent Role="Screening">
+              <PropertyRef Name="MovieID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Review__UserID__6B24EA82">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Review" Type="Self.Review" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Review">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Ticket__Screenin__4F7CD00D">
+          <End Role="Screening" Type="Self.Screening" Multiplicity="1" />
+          <End Role="Ticket" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Screening">
+              <PropertyRef Name="ScreeningID" />
+            </Principal>
+            <Dependent Role="Ticket">
+              <PropertyRef Name="ScreeningID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Ticket__UserID__5070F446">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Ticket" Type="Self.Ticket" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Ticket">
+              <PropertyRef Name="UserID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__TicketFoo__Ticke__6383C8BA">
+          <End Role="Ticket" Type="Self.Ticket" Multiplicity="1" />
+          <End Role="TicketFood" Type="Self.TicketFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ticket">
+              <PropertyRef Name="TicketID" />
+            </Principal>
+            <Dependent Role="TicketFood">
+              <PropertyRef Name="TicketID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="WebCinemaEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Cinemas" EntityType="Self.Cinema" />
+          <EntitySet Name="CinemaRooms" EntityType="Self.CinemaRoom" />
+          <EntitySet Name="Comboes" EntityType="Self.Combo" />
+          <EntitySet Name="ComboFoods" EntityType="Self.ComboFood" />
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <EntitySet Name="Foods" EntityType="Self.Food" />
+          <EntitySet Name="Movies" EntityType="Self.Movie" />
+          <EntitySet Name="Reviews" EntityType="Self.Review" />
+          <EntitySet Name="Screenings" EntityType="Self.Screening" />
+          <EntitySet Name="SeatTemplates" EntityType="Self.SeatTemplate" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Tickets" EntityType="Self.Ticket" />
+          <EntitySet Name="TicketFoods" EntityType="Self.TicketFood" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <AssociationSet Name="FK__CinemaRoo__Cinem__412EB0B6" Association="Self.FK__CinemaRoo__Cinem__412EB0B6">
+            <End Role="Cinema" EntitySet="Cinemas" />
+            <End Role="CinemaRoom" EntitySet="CinemaRooms" />
+          </AssociationSet>
+          <AssociationSet Name="FK__CinemaRoo__Templ__403A8C7D" Association="Self.FK__CinemaRoo__Templ__403A8C7D">
+            <End Role="SeatTemplate" EntitySet="SeatTemplates" />
+            <End Role="CinemaRoom" EntitySet="CinemaRooms" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Screening__RoomI__45F365D3" Association="Self.FK__Screening__RoomI__45F365D3">
+            <End Role="CinemaRoom" EntitySet="CinemaRooms" />
+            <End Role="Screening" EntitySet="Screenings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ComboFood__Combo__5DCAEF64" Association="Self.FK__ComboFood__Combo__5DCAEF64">
+            <End Role="Combo" EntitySet="Comboes" />
+            <End Role="ComboFood" EntitySet="ComboFoods" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TicketFoo__Combo__6754599E" Association="Self.FK__TicketFoo__Combo__6754599E">
+            <End Role="Combo" EntitySet="Comboes" />
+            <End Role="TicketFood" EntitySet="TicketFoods" />
+          </AssociationSet>
+          <AssociationSet Name="FK__ComboFood__FoodI__5EBF139D" Association="Self.FK__ComboFood__FoodI__5EBF139D">
+            <End Role="Food" EntitySet="Foods" />
+            <End Role="ComboFood" EntitySet="ComboFoods" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Customer_User" Association="Self.FK_Customer_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Customer" EntitySet="Customers" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TicketFoo__FoodI__66603565" Association="Self.FK__TicketFoo__FoodI__66603565">
+            <End Role="Food" EntitySet="Foods" />
+            <End Role="TicketFood" EntitySet="TicketFoods" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Review__MovieID__6C190EBB" Association="Self.FK__Review__MovieID__6C190EBB">
+            <End Role="Movie" EntitySet="Movies" />
+            <End Role="Review" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Screening__Movie__44FF419A" Association="Self.FK__Screening__Movie__44FF419A">
+            <End Role="Movie" EntitySet="Movies" />
+            <End Role="Screening" EntitySet="Screenings" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Review__UserID__6B24EA82" Association="Self.FK__Review__UserID__6B24EA82">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Review" EntitySet="Reviews" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Ticket__Screenin__4F7CD00D" Association="Self.FK__Ticket__Screenin__4F7CD00D">
+            <End Role="Screening" EntitySet="Screenings" />
+            <End Role="Ticket" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Ticket__UserID__5070F446" Association="Self.FK__Ticket__UserID__5070F446">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Ticket" EntitySet="Tickets" />
+          </AssociationSet>
+          <AssociationSet Name="FK__TicketFoo__Ticke__6383C8BA" Association="Self.FK__TicketFoo__Ticke__6383C8BA">
+            <End Role="Ticket" EntitySet="Tickets" />
+            <End Role="TicketFood" EntitySet="TicketFoods" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="WebCinemaModelStoreContainer" CdmEntityContainer="WebCinemaEntities">
+          <EntitySetMapping Name="Cinemas">
+            <EntityTypeMapping TypeName="WebCinemaModel.Cinema">
+              <MappingFragment StoreEntitySet="Cinema">
+                <ScalarProperty Name="CinemaID" ColumnName="CinemaID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CinemaRooms">
+            <EntityTypeMapping TypeName="WebCinemaModel.CinemaRoom">
+              <MappingFragment StoreEntitySet="CinemaRoom">
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="RoomName" ColumnName="RoomName" />
+                <ScalarProperty Name="RoomType" ColumnName="RoomType" />
+                <ScalarProperty Name="TemplateID" ColumnName="TemplateID" />
+                <ScalarProperty Name="CinemaID" ColumnName="CinemaID" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Comboes">
+            <EntityTypeMapping TypeName="WebCinemaModel.Combo">
+              <MappingFragment StoreEntitySet="Combo">
+                <ScalarProperty Name="ComboID" ColumnName="ComboID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ComboFoods">
+            <EntityTypeMapping TypeName="WebCinemaModel.ComboFood">
+              <MappingFragment StoreEntitySet="ComboFood">
+                <ScalarProperty Name="ComboID" ColumnName="ComboID" />
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="WebCinemaModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Foods">
+            <EntityTypeMapping TypeName="WebCinemaModel.Food">
+              <MappingFragment StoreEntitySet="Food">
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Stock" ColumnName="Stock" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Movies">
+            <EntityTypeMapping TypeName="WebCinemaModel.Movie">
+              <MappingFragment StoreEntitySet="Movie">
+                <ScalarProperty Name="MovieID" ColumnName="MovieID" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Director" ColumnName="Director" />
+                <ScalarProperty Name="ImageURL" ColumnName="ImageURL" />
+                <ScalarProperty Name="Cast" ColumnName="Cast" />
+                <ScalarProperty Name="ReleaseDate" ColumnName="ReleaseDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="Duration" ColumnName="Duration" />
+                <ScalarProperty Name="Genre" ColumnName="Genre" />
+                <ScalarProperty Name="AgeRating" ColumnName="AgeRating" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reviews">
+            <EntityTypeMapping TypeName="WebCinemaModel.Review">
+              <MappingFragment StoreEntitySet="Review">
+                <ScalarProperty Name="ReviewID" ColumnName="ReviewID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="MovieID" ColumnName="MovieID" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="CreatedAt" ColumnName="CreatedAt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Screenings">
+            <EntityTypeMapping TypeName="WebCinemaModel.Screening">
+              <MappingFragment StoreEntitySet="Screening">
+                <ScalarProperty Name="ScreeningID" ColumnName="ScreeningID" />
+                <ScalarProperty Name="MovieID" ColumnName="MovieID" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="ShowDate" ColumnName="ShowDate" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SeatTemplates">
+            <EntityTypeMapping TypeName="WebCinemaModel.SeatTemplate">
+              <MappingFragment StoreEntitySet="SeatTemplate">
+                <ScalarProperty Name="TemplateID" ColumnName="TemplateID" />
+                <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
+                <ScalarProperty Name="SeatMatrix" ColumnName="SeatMatrix" />
+                <ScalarProperty Name="SeatTypes" ColumnName="SeatTypes" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="TotalSeats" ColumnName="TotalSeats" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="WebCinemaModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tickets">
+            <EntityTypeMapping TypeName="WebCinemaModel.Ticket">
+              <MappingFragment StoreEntitySet="Ticket">
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="ScreeningID" ColumnName="ScreeningID" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="SeatNumber" ColumnName="SeatNumber" />
+                <ScalarProperty Name="BookingTime" ColumnName="BookingTime" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+                <ScalarProperty Name="PaymentStatus" ColumnName="PaymentStatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TicketFoods">
+            <EntityTypeMapping TypeName="WebCinemaModel.TicketFood">
+              <MappingFragment StoreEntitySet="TicketFood">
+                <ScalarProperty Name="TicketFoodID" ColumnName="TicketFoodID" />
+                <ScalarProperty Name="TicketID" ColumnName="TicketID" />
+                <ScalarProperty Name="FoodID" ColumnName="FoodID" />
+                <ScalarProperty Name="ComboID" ColumnName="ComboID" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="WebCinemaModel.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Role" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
