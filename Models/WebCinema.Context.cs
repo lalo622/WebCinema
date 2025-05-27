@@ -39,5 +39,6 @@ namespace WebCinema.Models
         public virtual DbSet<Ticket> Tickets { get; set; }
         public virtual DbSet<TicketFood> TicketFoods { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Seat> Seats { get; set; }
     }
 }

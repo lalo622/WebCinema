@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="WebCinemaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="WebCinemaModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Cinema">
           <Key>
             <PropertyRef Name="CinemaID" />
@@ -104,16 +104,31 @@
           <Property Name="StartTime" Type="time" Precision="7" Nullable="false" />
           <Property Name="Status" Type="tinyint" />
         </EntityType>
+        <EntityType Name="Seat">
+          <Key>
+            <PropertyRef Name="SeatID" />
+          </Key>
+          <Property Name="SeatID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TemplateID" Type="int" Nullable="false" />
+          <Property Name="SeatCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="RowNumber" Type="int" Nullable="false" />
+          <Property Name="ColumnNumber" Type="int" Nullable="false" />
+          <Property Name="SeatType" Type="tinyint" Nullable="false" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
         <EntityType Name="SeatTemplate">
           <Key>
             <PropertyRef Name="TemplateID" />
           </Key>
           <Property Name="TemplateID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="TemplateName" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="SeatMatrix" Type="nvarchar(max)" Nullable="false" />
-          <Property Name="SeatTypes" Type="nvarchar" MaxLength="100" />
           <Property Name="Description" Type="nvarchar" MaxLength="200" />
           <Property Name="TotalSeats" Type="int" />
+          <Property Name="ColumnCount" Type="int" />
+          <Property Name="NormalRows" Type="int" />
+          <Property Name="VipRows" Type="int" />
+          <Property Name="CoupleRows" Type="int" />
+          <Property Name="Row" Type="int" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -253,6 +268,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK__Seat__TemplateID__07C12930">
+          <End Role="SeatTemplate" Type="Self.SeatTemplate" Multiplicity="1" />
+          <End Role="Seat" Type="Self.Seat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SeatTemplate">
+              <PropertyRef Name="TemplateID" />
+            </Principal>
+            <Dependent Role="Seat">
+              <PropertyRef Name="TemplateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Ticket__Screenin__4F7CD00D">
           <End Role="Screening" Type="Self.Screening" Multiplicity="1" />
           <End Role="Ticket" Type="Self.Ticket" Multiplicity="*" />
@@ -337,6 +364,7 @@
           <EntitySet Name="Movie" EntityType="Self.Movie" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Review" EntityType="Self.Review" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Screening" EntityType="Self.Screening" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Seat" EntityType="Self.Seat" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SeatTemplate" EntityType="Self.SeatTemplate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Ticket" EntityType="Self.Ticket" Schema="dbo" store:Type="Tables" />
@@ -374,6 +402,10 @@
             <End Role="CinemaRoom" EntitySet="CinemaRoom" />
             <End Role="Screening" EntitySet="Screening" />
           </AssociationSet>
+          <AssociationSet Name="FK__Seat__TemplateID__07C12930" Association="Self.FK__Seat__TemplateID__07C12930">
+            <End Role="SeatTemplate" EntitySet="SeatTemplate" />
+            <End Role="Seat" EntitySet="Seat" />
+          </AssociationSet>
           <AssociationSet Name="FK__Ticket__Screenin__4F7CD00D" Association="Self.FK__Ticket__Screenin__4F7CD00D">
             <End Role="Screening" EntitySet="Screening" />
             <End Role="Ticket" EntitySet="Ticket" />
@@ -399,8 +431,7 @@
             <End Role="Customer" EntitySet="Customer" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="WebCinemaModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -527,11 +558,15 @@
           </Key>
           <Property Name="TemplateID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="TemplateName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="SeatMatrix" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="SeatTypes" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="TotalSeats" Type="Int32" />
           <NavigationProperty Name="CinemaRooms" Relationship="Self.FK__CinemaRoo__Templ__403A8C7D" FromRole="SeatTemplate" ToRole="CinemaRoom" />
+          <Property Name="ColumnCount" Type="Int32" />
+          <Property Name="NormalRows" Type="Int32" />
+          <Property Name="VipRows" Type="Int32" />
+          <Property Name="CoupleRows" Type="Int32" />
+          <Property Name="Row" Type="Int32" />
+          <NavigationProperty Name="Seats" Relationship="WebCinemaModel.FK__Seat__TemplateID__07C12930" FromRole="SeatTemplate" ToRole="Seat" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -825,7 +860,37 @@
             <End Role="Ticket" EntitySet="Tickets" />
             <End Role="TicketFood" EntitySet="TicketFoods" />
           </AssociationSet>
+          <EntitySet Name="Seats" EntityType="WebCinemaModel.Seat" />
+          <AssociationSet Name="FK__Seat__TemplateID__07C12930" Association="WebCinemaModel.FK__Seat__TemplateID__07C12930">
+            <End Role="SeatTemplate" EntitySet="SeatTemplates" />
+            <End Role="Seat" EntitySet="Seats" />
+          </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Seat">
+          <Key>
+            <PropertyRef Name="SeatID" />
+          </Key>
+          <Property Name="SeatID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TemplateID" Type="Int32" Nullable="false" />
+          <Property Name="SeatCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="RowNumber" Type="Int32" Nullable="false" />
+          <Property Name="ColumnNumber" Type="Int32" Nullable="false" />
+          <Property Name="SeatType" Type="Byte" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="SeatTemplate" Relationship="WebCinemaModel.FK__Seat__TemplateID__07C12930" FromRole="Seat" ToRole="SeatTemplate" />
+        </EntityType>
+        <Association Name="FK__Seat__TemplateID__07C12930">
+          <End Type="WebCinemaModel.SeatTemplate" Role="SeatTemplate" Multiplicity="1" />
+          <End Type="WebCinemaModel.Seat" Role="Seat" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SeatTemplate">
+              <PropertyRef Name="TemplateID" />
+            </Principal>
+            <Dependent Role="Seat">
+              <PropertyRef Name="TemplateID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -942,10 +1007,13 @@
           <EntitySetMapping Name="SeatTemplates">
             <EntityTypeMapping TypeName="WebCinemaModel.SeatTemplate">
               <MappingFragment StoreEntitySet="SeatTemplate">
+                <ScalarProperty Name="Row" ColumnName="Row" />
+                <ScalarProperty Name="CoupleRows" ColumnName="CoupleRows" />
+                <ScalarProperty Name="VipRows" ColumnName="VipRows" />
+                <ScalarProperty Name="NormalRows" ColumnName="NormalRows" />
+                <ScalarProperty Name="ColumnCount" ColumnName="ColumnCount" />
                 <ScalarProperty Name="TemplateID" ColumnName="TemplateID" />
                 <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
-                <ScalarProperty Name="SeatMatrix" ColumnName="SeatMatrix" />
-                <ScalarProperty Name="SeatTypes" ColumnName="SeatTypes" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="TotalSeats" ColumnName="TotalSeats" />
               </MappingFragment>
@@ -994,6 +1062,19 @@
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="Role" ColumnName="Role" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Seats">
+            <EntityTypeMapping TypeName="WebCinemaModel.Seat">
+              <MappingFragment StoreEntitySet="Seat">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="SeatType" ColumnName="SeatType" />
+                <ScalarProperty Name="ColumnNumber" ColumnName="ColumnNumber" />
+                <ScalarProperty Name="RowNumber" ColumnName="RowNumber" />
+                <ScalarProperty Name="SeatCode" ColumnName="SeatCode" />
+                <ScalarProperty Name="TemplateID" ColumnName="TemplateID" />
+                <ScalarProperty Name="SeatID" ColumnName="SeatID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

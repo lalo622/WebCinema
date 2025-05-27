@@ -164,6 +164,9 @@
     <Compile Include="Models\Screening.cs">
       <DependentUpon>WebCinema.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Seat.cs">
+      <DependentUpon>WebCinema.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\SeatTemplate.cs">
       <DependentUpon>WebCinema.tt</DependentUpon>
     </Compile>

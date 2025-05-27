@@ -18,16 +18,22 @@ namespace WebCinema.Models
         public SeatTemplate()
         {
             this.CinemaRooms = new HashSet<CinemaRoom>();
+            this.Seats = new HashSet<Seat>();
         }
     
         public int TemplateID { get; set; }
         public string TemplateName { get; set; }
-        public string SeatMatrix { get; set; }
-        public string SeatTypes { get; set; }
         public string Description { get; set; }
         public Nullable<int> TotalSeats { get; set; }
+        public Nullable<int> ColumnCount { get; set; }
+        public Nullable<int> NormalRows { get; set; }
+        public Nullable<int> VipRows { get; set; }
+        public Nullable<int> CoupleRows { get; set; }
+        public Nullable<int> Row { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CinemaRoom> CinemaRooms { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Seat> Seats { get; set; }
     }
 }

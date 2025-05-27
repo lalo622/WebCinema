@@ -14,7 +14,7 @@
         <EntityTypeShape EntityType="WebCinemaModel.Movie" Width="1.5" PointX="1.5" PointY="26.75" IsExpanded="true" />
         <EntityTypeShape EntityType="WebCinemaModel.Review" Width="1.5" PointX="6" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="WebCinemaModel.Screening" Width="1.5" PointX="0.75" PointY="12.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="WebCinemaModel.SeatTemplate" Width="1.5" PointX="1.5" PointY="23.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="WebCinemaModel.SeatTemplate" Width="1.5" PointX="9.125" PointY="23.5" IsExpanded="true" />
         <EntityTypeShape EntityType="WebCinemaModel.sysdiagram" Width="1.5" PointX="7.75" PointY="1.125" IsExpanded="true" />
         <EntityTypeShape EntityType="WebCinemaModel.Ticket" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="WebCinemaModel.TicketFood" Width="1.5" PointX="5.25" PointY="0.875" IsExpanded="true" />
@@ -33,6 +33,8 @@
         <AssociationConnector Association="WebCinemaModel.FK__Ticket__Screenin__4F7CD00D" ManuallyRouted="false" />
         <AssociationConnector Association="WebCinemaModel.FK__Ticket__UserID__5070F446" ManuallyRouted="false" />
         <AssociationConnector Association="WebCinemaModel.FK__TicketFoo__Ticke__6383C8BA" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="WebCinemaModel.Seat" Width="1.5" PointX="3.75" PointY="24.125" />
+        <AssociationConnector Association="WebCinemaModel.FK__Seat__TemplateID__07C12930" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
