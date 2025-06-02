@@ -6,198 +6,166 @@
 }
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 
 <style>
-    .form-group label {
-        font-weight: bold;
-        margin-bottom: 0.5rem;
+    .main-content {
+        padding: 15px;
+        background-color: #f8f9fa;
     }
 
-    .star {
-        color: red;
+    .form-container {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        padding: 20px;
+        max-width: 900px;
+        margin-right:auto;
+        margin-left:0;
     }
 
-    .row-tight {
-        --bs-gutter-x: 0.25rem !important;
+    .page-title {
+        color: #333;
+        font-size: 22px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 15px;
     }
 
     .form-group {
-        margin-bottom: 1rem;
+        margin-bottom: 15px;
     }
 
-    .form-horizontal {
-        padding: 0 !important;
+        .form-group label {
+            font-weight: 500;
+            color: #495057;
+            margin-bottom: 5px;
+            font-size: 14px;
+            display: block;
+        }
+
+    .form-control {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-size: 14px;
+        height: 38px;
+        width: 100%;
     }
 
-    .col-md-4, .col-md-6, .col-md-12 {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .btn-action {
+        padding: 8px 16px;
+        font-size: 14px;
+        border-radius: 4px;
+        margin-right: 10px;
+    }
+
+    .btn-save {
+        background-color: #28a745;
+        color: white;
+        border: none;
+    }
+
+    .btn-cancel {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+    }
+
+    .file-upload {
+        display: flex;
+        align-items: center;
+    }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+    .file-upload-label {
+        background-color: #f8f9fa;
+        border: 1px dashed #ced4da;
+        padding: 8px 12px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+        .file-upload-label:hover {
+            background-color: #e9ecef;
+        }
+
+    .file-icon {
+        margin-right: 8px;
+        color: #6c757d;
+    }
+
+    .required-field::after {
+        content: " *";
+        color: #dc3545;
+    }
+
+    .form-actions {
+        margin-top: 20px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+        text-align: left;
+    }
+
+    @@media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .form-container {
+            padding: 15px;
+        }
     }
 </style>
 
-<h2>Thông tin phim</h2>
-
-@using (Html.BeginForm())
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-        <!-- Hàng 1: Tên phim -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label><span class="star">*</span> Tên phim:</label>
-                    @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", @placeholder = "Nhập tên phim" } })
-                    @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <!-- Hàng 2: Hình ảnh -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label><span class="star">*</span> Hình ảnh:</label>
-                    @Html.EditorFor(model => model.ImageURL, new { htmlAttributes = new { @class = "form-control", @placeholder = "Nhập URL ảnh" } })
-                    @Html.ValidationMessageFor(model => model.ImageURL, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <!-- Hàng 3: Đạo diễn và Diễn viên -->
-        <div class="row row-tight">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label><span class="star">*</span> Đạo diễn:</label>
-                    @Html.EditorFor(model => model.Director, new { htmlAttributes = new { @class = "form-control", @placeholder = "Eiichiro Oda" } })
-                    @Html.ValidationMessageFor(model => model.Director, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label><span class="star">*</span> Diễn viên:</label>
-                    @Html.EditorFor(model => model.Cast, new { htmlAttributes = new { @class = "form-control", @placeholder = "Monkey D. Luffy, Roronoa Zoro" } })
-                    @Html.ValidationMessageFor(model => model.Cast, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <!-- Hàng 4: Ngày khởi chiếu, Ngày kết thúc, Thời lượng -->
-        <div class="row row-tight">
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label><span class="star">*</span> Ngày khởi chiếu:</label>
-                    @Html.EditorFor(model => model.ReleaseDate, new
-                    {
-                        htmlAttributes = new
-                        {
-                            @class = "form-control",
-                            @type = "date",
-                            @min = DateTime.Today.ToString("yyyy-MM-dd")
-                        }
-                    })
-                    @Html.ValidationMessageFor(model => model.ReleaseDate, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label><span class="star">*</span> Ngày kết thúc:</label>
-                    @Html.EditorFor(model => model.EndDate, new
-                    {
-                        htmlAttributes = new
-                        {
-                            @class = "form-control",
-                            @type = "date",
-                            @min = DateTime.Today.ToString("yyyy-MM-dd")
-                        }
-                    })
-                    @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label><span class="star">*</span> Thời lượng:</label>
-                    @Html.EditorFor(model => model.Duration, new { htmlAttributes = new { @class = "form-control", @placeholder = "127 (phút)" } })
-                    @Html.ValidationMessageFor(model => model.Duration, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <!-- Hàng 5: Giới hạn độ tuổi và Thể loại -->
-        <div class="row row-tight">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label><span class="star">*</span> Giới hạn độ tuổi:</label>
-                    <select class="form-control" id="AgeRating" name="AgeRating">
-                        <option value="P">P - Phim dành cho mọi đối tượng</option>
-                        <option value="13+">13+ - Cho 13 tuổi trở lên</option>
-                        <option value="18+">18+ - Cho 18 tuổi trở lên</option>
-                    </select>
-                    @Html.ValidationMessageFor(model => model.AgeRating, "", new { @class = "text-danger" })
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label><span class="star">*</span> Thể loại:</label>
-                    @Html.EditorFor(model => model.Genre, new { htmlAttributes = new { @class = "form-control", @placeholder = "Hoạt hình, Khám phá" } })
-                    @Html.ValidationMessageFor(model => model.Genre, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <!-- Hàng 6: Mô tả -->
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label><span class="star">*</span> Mô tả:</label>
-                    @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @placeholder = "Nhập mô tả phim", @rows = "3" })
-                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-        <!-- Nút Submit -->
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Thêm " class="btn btn-primary" />
-            </div>
+    <div class="main-content">
+        <div class="form-container">
+            <h2 class="page-title">Thêm Phim Mới</h2>
+            @using (Html.BeginForm("Create", "Movies", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.Partial("PVCreateEditMovies", Model)
+            }
         </div>
     </div>
-}
-
-<div>
-    @Html.ActionLink("Quay lại", "Index")
-</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
-
     <script>
         $(document).ready(function () {
-            $('input[type="date"]').each(function () {
-                if (!$(this).val()) {
-                    var today = new Date().toISOString().split('T')[0];
-                    $(this).val(today);
-                }
+            // Hiển thị tên file khi chọn
+            $('#fileUpload').change(function () {
+                var fileName = $(this).val().split('\\').pop();
+                $('#fileName').text(fileName || "Chưa có tệp nào được chọn");
             });
-        });
-    </script>
-    <script>
-        $(document).ready(function () {
-            const today = new Date().toISOString().split('T')[0];
-            $('#ReleaseDate, #EndDate').attr('min', today);
 
-            $('#ReleaseDate').change(function () {
-                const releaseDate = $(this).val();
-                $('#EndDate').attr('min', releaseDate);
+            // Thiết lập ngày mặc định
+            var today = new Date().toISOString().split('T')[0];
+            $('#ReleaseDate').val(today);
 
-                if ($('#EndDate').val() < releaseDate) {
-                    $('#EndDate').val(releaseDate);
-                }
-            });
+            // Tự động tính ngày kết thúc (30 ngày sau)
+            var endDate = new Date();
+            endDate.setDate(endDate.getDate() + 30);
+            var endDateStr = endDate.toISOString().split('T')[0];
+            $('#EndDate').val(endDateStr);
         });
     </script>
 }

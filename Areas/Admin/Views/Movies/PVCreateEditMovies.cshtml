@@ -1,0 +1,90 @@
+﻿@model WebCinema.Models.Movie
+@{
+    var isEdit = Model.MovieID > 0;
+}
+@Html.AntiForgeryToken()
+@Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+@Html.HiddenFor(m => m.MovieID)
+
+<div class="form-grid">
+    <div class="form-group">
+        <label class="required-field">Tên phim</label>
+        @Html.TextBoxFor(m => m.Title, new { @class = "form-control", placeholder = "Nhập tên phim" })
+        @Html.ValidationMessageFor(m => m.Title, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label class="required-field">Đạo diễn</label>
+        @Html.TextBoxFor(m => m.Director, new { @class = "form-control", placeholder = "Nhập tên đạo diễn" })
+        @Html.ValidationMessageFor(m => m.Director, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label class="required-field">Ngày khởi chiếu</label>
+        @Html.TextBoxFor(m => m.ReleaseDate, new { @class = "form-control", type = "date" })
+        @Html.ValidationMessageFor(m => m.ReleaseDate, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label class="required-field">Ngày kết thúc</label>
+        @Html.TextBoxFor(m => m.EndDate, new { @class = "form-control", type = "date" })
+        @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label class="required-field">Thể loại</label>
+        @Html.TextBoxFor(m => m.Genre, new { @class = "form-control", placeholder = "Thể loại" })
+        @Html.ValidationMessageFor(m => m.Genre, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label class="required-field">Thời lượng (phút)</label>
+        @Html.TextBoxFor(m => m.Duration, new { @class = "form-control", type = "number" })
+        @Html.ValidationMessageFor(m => m.Duration, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label class="required-field">Diễn viên</label>
+        @Html.TextBoxFor(m => m.Cast, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.Cast, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label class="required-field">Độ tuổi</label>
+        @Html.DropDownListFor(m => m.AgeRating, new List<SelectListItem> {
+            new SelectListItem { Text = "P - Mọi độ tuổi", Value = "P" },
+            new SelectListItem { Text = "13+ - Từ 13 tuổi", Value = "13+" },
+            new SelectListItem { Text = "18+ - Từ 18 tuổi", Value = "18+" }
+        }, "Chọn độ tuổi", new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.AgeRating, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label for="fileUpload">Hình ảnh phim</label>
+        <input type="file" name="fileUpload" id="fileUpload" class="form-control" />
+        @if (ViewData.ModelState["fileUpload"]?.Errors?.Count > 0)
+        {
+            <span class="text-danger">@ViewData.ModelState["fileUpload"].Errors.First().ErrorMessage</span>
+        }
+
+        @if (isEdit && !string.IsNullOrEmpty(Model.ImageURL))
+        {
+            <div style="margin-top:10px;">
+                <img src="~/Content/Images/Movies/@Model.ImageURL" style="max-width:150px;" />
+            </div>
+        }
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="required-field">Mô tả phim</label>
+    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 5 })
+    @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+</div>
+
+<div class="form-actions">
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Hủy</a>
+</div>
+

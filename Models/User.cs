@@ -25,6 +25,9 @@ namespace WebCinema.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public Nullable<byte> Role { get; set; }
+        public Nullable<bool> IsConfirmed { get; set; }
+        public string VerificationCode { get; set; }
+        public Nullable<System.DateTime> VerificationCodeGeneratedAt { get; set; }
     
         public virtual Customer Customer { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
