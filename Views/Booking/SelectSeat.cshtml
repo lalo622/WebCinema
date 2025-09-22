@@ -1,0 +1,284 @@
+﻿@model WebCinema.ViewModel.Seat.SeatSelectionViewModel
+@{
+    ViewBag.Title = "Chọn ghế - " + Model.MovieTitle;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/SelectSeat.css" rel="stylesheet" />
+<div class="booking-container">
+    <!-- Header thông tin phim -->
+    <div class="booking-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>@Model.MovieTitle</h2>
+                    <p class="booking-info">
+                        <span><i class="fa fa-map-marker"></i> @Model.CinemaName - @Model.RoomName</span>
+                        <span><i class="fa fa-calendar"></i> @Model.ShowDate.ToString("dddd, dd/MM/yyyy")</span>
+                        <span><i class="fa fa-clock-o"></i> @Model.StartTime.ToString(@"hh\:mm")</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Đếm ngược thời gian -->
+    <div class="booking-timer">
+        <div class="container">
+            <div class="timer-box">
+                <i class="fa fa-clock-o"></i>
+                <span>Thời gian còn lại: </span>
+                <span id="countdown-timer" class="timer-display">15:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Màn hình chiếu -->
+    <div class="screen-section">
+        <div class="container">
+            <div class="screen">
+                <div class="screen-label">MÀN HÌNH CHIẾU</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sơ đồ ghế -->
+    <div class="seat-map-section">
+        <div class="container">
+            <div class="seat-map" id="seatMap">
+                @{
+                    var seatsGroupedByRow = Model.SeatMap.Seats.GroupBy(s => s.Row).OrderBy(g => g.Key);
+                }
+
+                @foreach (var rowGroup in seatsGroupedByRow)
+                {
+                    <div class="seat-row" data-row="@rowGroup.Key">
+                        <div class="row-label">@((char)('A' + rowGroup.Key - 1))</div>
+                        <div class="seats-container">
+                            @foreach (var seat in rowGroup.OrderBy(s => s.Column))
+                            {
+                                <div class="seat @GetSeatCssClass(seat)"
+                                     data-seat="@seat.SeatNumber"
+                                     data-price="@seat.Price"
+                                     data-type="@seat.SeatType.ToString().ToLower()"
+                                     title="Ghế @seat.DisplayName - @seat.Price.ToString("N0") VNĐ">
+                                    <span class="seat-label">@seat.DisplayName</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="row-label">@((char)('A' + rowGroup.Key - 1))</div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Chú thích -->
+    <div class="seat-legend">
+        <div class="container">
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="seat-sample available regular"></div>
+                    <span>Ghế thường - @Model.SeatMap.RegularSeatPrice.ToString("N0") VNĐ</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat-sample available vip"></div>
+                    <span>Ghế VIP - @Model.SeatMap.VipSeatPrice.ToString("N0") VNĐ</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat-sample available couple"></div>
+                    <span>Ghế đôi - @Model.SeatMap.CoupleSeatPrice.ToString("N0") VNĐ</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat-sample selected"></div>
+                    <span>Ghế đang chọn</span>
+                </div>
+                <div class="legend-item">
+                    <div class="seat-sample occupied"></div>
+                    <span>Ghế đã đặt</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thông tin ghế đã chọn -->
+    <div class="selected-seats-info" id="selectedSeatsInfo" style="display: none;">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8">
+                    <h4>Ghế đã chọn:</h4>
+                    <div id="selectedSeatsList"></div>
+                </div>
+                <div class="col-md-4 text-right">
+                    <div class="total-price">
+                        <h4>Tổng tiền: <span id="totalPrice">0</span> VNĐ</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút tiếp tục -->
+    <div class="booking-actions">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button type="button" class="btn btn-primary btn-lg" id="continueBtn" disabled>
+                        Tiếp tục thanh toán
+                    </button>
+                    <a href="@Url.Action("SelectDateTime", new { movieId = Model.MovieId })" class="btn btn-default btn-lg">
+                        Quay lại
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    string GetSeatCssClass(WebCinema.ViewModel.Seat.SeatViewModel seat)
+    {
+        var classes = "available " + seat.SeatType.ToString().ToLower();
+        if (seat.IsBooked) classes += " occupied";
+        if (seat.IsSelected) classes += " selected";
+        return classes;
+    }
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    var sessionId = '@ViewBag.BookingSessionId';
+    var screeningId = @Model.ScreeningId;
+    var selectedSeats = [];
+    var totalPrice = 0;
+    var countdownTimer;
+
+    // Khởi tạo đếm ngược
+    startCountdown();
+
+    // Xử lý click chọn ghế
+    $('.seat.available').click(function() {
+        if ($(this).hasClass('occupied')) return;
+
+        var seatNumber = $(this).data('seat');
+        var seatPrice = $(this).data('price');
+
+        // Gọi AJAX toggle seat
+        $.ajax({
+            url: '@Url.Action("ToggleSeat", "Booking")',
+            type: 'POST',
+            data: {
+                sessionId: sessionId,
+                screeningId: screeningId,
+                seatNumber: seatNumber
+            },
+            success: function(response) {
+                if (response.Success) {
+                    // Cập nhật UI
+                    updateSeatSelection(response.Data);
+                } else {
+                    alert(response.Message);
+                }
+            },
+            error: function() {
+                alert('Có lỗi xảy ra, vui lòng thử lại');
+            }
+        });
+    });
+
+    // Nút tiếp tục
+    $('#continueBtn').click(function () {
+        if (selectedSeats.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Chưa chọn ghế',
+                text: 'Vui lòng chọn ít nhất một ghế để tiếp tục.'
+            });
+            return;
+        }
+
+        window.location.href = '/Payment/Info?sessionId=' + sessionId;
+   
+});
+
+    function updateSeatSelection(data) {
+        selectedSeats = data.selectedSeats;
+        totalPrice = data.totalPrice;
+
+        // Reset tất cả ghế
+        $('.seat').removeClass('selected');
+
+        // Đánh dấu ghế đã chọn
+        selectedSeats.forEach(function(seatNumber) {
+            $('.seat[data-seat="' + seatNumber + '"]').addClass('selected');
+        });
+
+        // Cập nhật thông tin ghế đã chọn
+        if (selectedSeats.length > 0) {
+            var seatsList = selectedSeats.map(function(seatNumber) {
+                var seat = $('.seat[data-seat="' + seatNumber + '"]');
+                var price = seat.data('price');
+                var type = seat.data('type');
+                return seatNumber + ' (' + formatPrice(price) + ' VNĐ)';
+            }).join(', ');
+
+            $('#selectedSeatsList').html('<p>' + seatsList + '</p>');
+            $('#totalPrice').text(formatPrice(totalPrice));
+            $('#selectedSeatsInfo').show();
+            $('#continueBtn').prop('disabled', false);
+        } else {
+            $('#selectedSeatsInfo').hide();
+            $('#continueBtn').prop('disabled', true);
+        }
+    }
+
+    function startCountdown() {
+        var expireTime = new Date('@Model.BookingExpireTime.ToString("yyyy-MM-ddTHH:mm:ss")');
+
+        countdownTimer = setInterval(function() {
+            var now = new Date();
+            var timeLeft = expireTime - now;
+
+            if (timeLeft <= 0) {
+                clearInterval(countdownTimer);
+                alert('Hết thời gian đặt vé! Bạn sẽ được chuyển về trang chủ.');
+                window.location.href = '@Url.Action("Index", "Home")';
+                return;
+            }
+
+            var minutes = Math.floor(timeLeft / 60000);
+            var seconds = Math.floor((timeLeft % 60000) / 1000);
+
+            $('#countdown-timer').text(
+                (minutes < 10 ? '0' : '') + minutes + ':' +
+                (seconds < 10 ? '0' : '') + seconds
+            );
+
+            // Đổi màu khi còn dưới 5 phút
+            if (timeLeft < 300000) { // 5 phút
+                $('#countdown-timer').css('color', '#e74c3c');
+            }
+        }, 1000);
+    }
+
+    function formatPrice(price) {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    // Kiểm tra thời gian định kỳ
+    setInterval(function() {
+        $.ajax({
+            url: '@Url.Action("CheckBookingTime", "Booking")',
+            type: 'POST',
+            data: { sessionId: sessionId },
+            success: function(response) {
+                if (response.expired) {
+                    clearInterval(countdownTimer);
+                    alert('Phiên đặt vé đã hết hạn!');
+                    window.location.href = '@Url.Action("Index", "Home")';
+                }
+            }
+        });
+    }, 30000); // Kiểm tra mỗi 30 giây
+});
+</script>

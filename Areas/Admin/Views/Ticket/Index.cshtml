@@ -1,0 +1,81 @@
+﻿@model IEnumerable<WebCinema.ViewModel.TicketDetailViewModel>
+@{
+    ViewBag.Title = "Quản lý vé";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Danh sách vé</h3>
+    </div>
+    <div class="card-body">
+        <table id="ticketsTable" class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Mã vé</th>
+                    <th>Tên khách hàng</th>
+                    <th>Email</th>
+                    <th>Điện thoại</th>
+                    <th>Phim</th>
+                    <th>Suất chiếu</th>
+                    <th>Phòng</th>
+                    <th>Ghế</th>
+                    <th>Thời gian đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.TicketID</td>
+                        <td>@item.CustomerName</td>
+                        <td>@item.Email</td>
+                        <td>@item.Phone</td>
+                        <td>@item.MovieTitle</td>
+                        <td>@item.ScreeningTime.ToString(@"hh\:mm")</td>
+                        <td>@item.RoomName</td>
+                        <td>@item.SeatNumber</td>
+                        <td>@(item.BookingTime?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</td>
+                        <td>@item.TotalPrice.ToString("N0") đ</td>
+                        <td>
+                            @if (item.PaymentStatus == 1)
+                            {
+                                <span class="badge badge-success">Đã thanh toán</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-warning">Chưa thanh toán</span>
+                            }
+                        </td>
+                        <td>
+                            
+                            
+                            <a href="@Url.Action("PrintTicket", new { id = item.TicketID })" class="btn btn-warning btn-sm" title="In vé" target="_blank">
+                                <i class="fas fa-print">In vé</i>
+                            </a>
+                            
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(function () {
+            $("#ticketsTable").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+                "order": [[0, "desc"]],
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Vietnamese.json"
+                }
+            });
+        });
+    </script>
+}

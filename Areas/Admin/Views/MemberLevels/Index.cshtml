@@ -1,0 +1,160 @@
+﻿@model IEnumerable<WebCinema.Models.MemberLevel>
+@{
+    ViewBag.Title = "Quản lý cấp độ thành viên";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<style>
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 46px;
+        height: 24px;
+    }
+
+        .switch input {
+            display: none;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .slider {
+        background-color: #2bd47d;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+</style>
+
+<h2>Quản lý cấp độ thành viên</h2>
+
+@using (Html.BeginForm("Index", "MemberLevels", FormMethod.Get))
+{
+    @Html.AntiForgeryToken()
+    <p>
+        Tìm kiếm cấp độ:
+        @Html.TextBox("search", ViewBag.CurrentFilter as string, new { @class = "form-control", style = "width: 300px; display: inline;" })
+        <input type="submit" value="Tìm kiếm" class="btn btn-primary" />
+    </p>
+}
+
+<div class="mb-3 text-end">
+    @Html.ActionLink("Thêm mới", "Create", null, new { @class = "btn btn-primary" })
+</div>
+
+<table class="table table-bordered align-middle text-center">
+    <thead class="table-dark">
+        <tr>
+            <th>#</th>
+            <th>Tên cấp độ</th>
+            <th>Chi tiêu yêu cầu</th>
+            <th>Tích điểm vé (%)</th>
+            <th>Tích điểm combo (%)</th>
+            <th>Chức năng</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int stt = 1;
+        }
+        @foreach (var item in Model)
+        {
+            <tr id="row-@item.MemberLevelID">
+                <td>@stt</td>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.RequiredSpending)</td>
+                <td>@Html.DisplayFor(modelItem => item.TicketPointPercent)</td>
+                <td>@Html.DisplayFor(modelItem => item.ComboPointPercent)</td>
+                <td>
+                    @Html.ActionLink("Sửa", "Edit", new { id = item.MemberLevelID }, new { @class = "btn btn-sm btn-warning mb-1" })<br />
+                    @Html.ActionLink("Chi tiết", "Details", new { id = item.MemberLevelID }, new { @class = "btn btn-sm btn-info mb-1" })<br />
+                    <a href="javascript:void(0);" class="btn btn-sm btn-danger delete-btn" data-id="@item.MemberLevelID" data-name="@item.Name">Xóa</a>
+                </td>
+            </tr>
+            stt++;
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        function confirmDelete(memberLevelId, memberLevelName) {
+            Swal.fire({
+                title: 'Xác nhận xóa',
+                html: `Bạn có chắc chắn muốn xóa cấp độ <strong>${memberLevelName}</strong> không?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteAjaxConfirmed", "MemberLevels")',
+                        type: 'POST',
+                        data: { id: memberLevelId, __RequestVerificationToken: token },
+                        success: function (response) {
+                            if (response.success) {
+                                $('#row-' + memberLevelId).remove();
+                                Swal.fire(
+                                    'Đã xóa!',
+                                    'Cấp độ thành viên đã được xóa thành công.',
+                                    'success'
+                                );
+                            } else {
+                                Swal.fire(
+                                    'Lỗi!',
+                                    response.message || 'Không thể xóa cấp độ thành viên.',
+                                    'error'
+                                );
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire(
+                                'Lỗi!',
+                                xhr.responseJSON?.message || 'Đã xảy ra lỗi khi xóa cấp độ thành viên.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('.delete-btn').click(function () {
+                var memberLevelId = $(this).data('id');
+                var memberLevelName = $(this).data('name');
+                confirmDelete(memberLevelId, memberLevelName);
+            });
+        });
+    </script>
+}

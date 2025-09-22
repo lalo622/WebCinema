@@ -1,0 +1,700 @@
+﻿@model WebCinema.ViewModel.Profile.PersonalInfoViewModel
+
+@{
+    ViewBag.Title = "Thông Tin Cá Nhân";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .profile-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 2px solid #e9ecef;
+    }
+
+    .tab {
+        flex: 1;
+        padding: 20px;
+        text-align: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        color: #6c757d;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+        .tab:hover {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .tab.active {
+            color: #f60;
+            background: white;
+        }
+
+            .tab.active::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: #f60;
+            }
+
+    .tab-content {
+        display: none;
+        padding: 30px;
+        animation: fadeIn 0.3s ease;
+    }
+
+        .tab-content.active {
+            display: block;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Tab 1: Thông tin tài khoản */
+    .form-group {
+        margin-bottom: 25px;
+        position: relative;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+            .form-group input:focus {
+                outline: none;
+                border-color: #f60;
+                box-shadow: 0 0 0 3px rgba(255, 102, 0, 0.1);
+            }
+
+            .form-group input[readonly] {
+                background-color: #f8f9fa;
+                color: #6c757d;
+                cursor: not-allowed;
+            }
+
+    .edit-btn {
+        position: absolute;
+        right: 15px;
+        top: 38px;
+        background: none;
+        border: none;
+        color: #f60;
+        cursor: pointer;
+        font-size: 12px;
+        text-decoration: underline;
+    }
+
+    .gender-group {
+        display: flex;
+        gap: 20px;
+        margin-top: 10px;
+    }
+
+    .gender-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .update-btn, .confirm-btn {
+        background: linear-gradient(135deg, #f60 0%, #ff8c42 100%);
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+    }
+
+        .update-btn:hover, .confirm-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 102, 0, 0.3);
+        }
+
+    .cancel-btn {
+        background: #6c757d;
+        color: white;
+        padding: 12px 30px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .error {
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    .success {
+        color: #28a745;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        animation: modalFadeIn 0.3s ease;
+    }
+
+    .modal-content {
+        background-color: white;
+        margin: 10% auto;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 500px;
+        position: relative;
+        animation: modalSlideIn 0.3s ease;
+    }
+
+    @@keyframes modalFadeIn {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes modalSlideIn {
+        from {
+            transform: translateY(-50px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .modal h3 {
+        margin-bottom: 20px;
+        color: #333;
+        text-align: center;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    /* Tab 2: Lịch sử giao dịch */
+    .ticket-history {
+        display: grid;
+        gap: 20px;
+    }
+
+    .ticket-item {
+        display: flex;
+        gap: 20px;
+        padding: 20px;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+
+        .ticket-item:hover {
+            border-color: #f60;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+    .movie-poster {
+        width: 80px;
+        height: 120px;
+        border-radius: 8px;
+        object-fit: cover;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .ticket-details {
+        flex: 1;
+    }
+
+    .movie-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .ticket-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+        color: #6c757d;
+        font-size: 14px;
+    }
+
+    .info-item {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .price {
+        font-size: 18px;
+        font-weight: 700;
+        color: #f60;
+        text-align: right;
+    }
+
+    /* Tab 3: Thẻ thành viên */
+    .member-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 30px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .member-level {
+        font-size: 24px;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .member-benefits {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .benefit-item {
+        background: rgba(255,255,255,0.1);
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+    }
+
+    .point-history {
+        margin-top: 30px;
+    }
+
+        .point-history h4 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+    .point-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+        .point-item:last-child {
+            border-bottom: none;
+        }
+
+    .point-date {
+        color: #6c757d;
+        font-size: 12px;
+    }
+
+    .point-change {
+        font-weight: 600;
+    }
+
+        .point-change.positive {
+            color: #28a745;
+        }
+
+        .point-change.negative {
+            color: #dc3545;
+        }
+
+    .no-data {
+        text-align: center;
+        color: #6c757d;
+        padding: 40px;
+        font-style: italic;
+    }
+
+    @@media (max-width: 768px) {
+        .tabs {
+            flex-direction: column;
+        }
+
+        .ticket-item {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .movie-poster {
+            align-self: center;
+        }
+
+        .profile-container {
+            margin: 10px;
+            border-radius: 8px;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('account')">THÔNG TIN TÀI KHOẢN</button>
+        <button class="tab" onclick="showTab('history')">LỊCH SỬ GIAO DỊCH</button>
+        <button class="tab" onclick="showTab('membership')">THẺ THÀNH VIÊN</button>
+    </div>
+
+    <!-- Tab 1: Thông tin tài khoản -->
+    <div id="account" class="tab-content active">
+        <h2 style="margin-bottom: 30px; color: #333;">Thông Tin Tài Khoản</h2>
+
+        <form id="profileForm">
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                <label>Họ và tên</label>
+                <input type="text" id="fullName" name="fullName" value="@(Model?.Customer?.FullName ?? "")" readonly>
+                <button type="button" class="edit-btn" onclick="enableEdit('fullName')">Chỉnh sửa</button>
+            </div>
+
+            <div class="form-group">
+                <label>Ngày sinh</label>
+                <input type="date" id="birthDate" name="birthDate" value="@(Model?.Customer?.BirthDate?.ToString("yyyy-MM-dd") ?? "")" readonly>
+                <button type="button" class="edit-btn" onclick="enableEdit('birthDate')">Chỉnh sửa</button>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" name="email" value="@(Model?.Customer?.Email ?? "")" readonly>
+                <button type="button" class="edit-btn" onclick="enableEdit('email')">Chỉnh sửa</button>
+                <div class="error" id="email-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Số điện thoại</label>
+                <input type="tel" id="phone" name="phone" value="@(Model?.Customer?.Phone ?? "")" readonly>
+                <button type="button" class="edit-btn" onclick="enableEdit('phone')">Chỉnh sửa</button>
+                <div class="error" id="phone-error"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Giới tính</label>
+                <div class="gender-group">
+                    <div class="gender-option">
+                        <input type="radio" name="gender" value="Nam" checked disabled>
+                        <label>Nam</label>
+                    </div>
+                    <div class="gender-option">
+                        <input type="radio" name="gender" value="Nữ" disabled>
+                        <label>Nữ</label>
+                    </div>
+                </div>
+                <button type="button" class="edit-btn" onclick="enableEdit('gender')" style="top: 8px;">Chỉnh sửa</button>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <button type="button" class="update-btn" onclick="showPasswordModal()" id="updateBtn" style="display:none;">Cập nhật thông tin</button>
+                <button type="button" class="cancel-btn" onclick="cancelEdit()" id="cancelBtn" style="display:none;">Hủy</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Tab 2: Lịch sử giao dịch -->
+    <div id="history" class="tab-content">
+        <h2 style="margin-bottom: 30px; color: #333;">Lịch Sử Giao Dịch</h2>
+
+        @if (Model?.TicketHistory != null && Model.TicketHistory.Any())
+        {
+            <div class="ticket-history">
+                @foreach (var ticket in Model.TicketHistory)
+                {
+                    <div class="ticket-item">
+
+                        <div class="ticket-details">
+                            <div class="movie-title">@ticket.MovieTitle</div>
+                            <div class="ticket-info">
+                                <div class="info-item">
+                                    <span>Ngày chiếu:</span>
+                                    <span>@ticket.ShowDate.ToString("dd/MM/yyyy")</span>
+                                </div>
+                                <div class="info-item">
+                                    <span>Giờ chiếu:</span>
+                                    <span>@ticket.ScreeningTime.ToString(@"hh\:mm")</span>
+                                </div>
+                                <div class="info-item">
+                                    <span>Phòng:</span>
+                                    <span>@ticket.RoomName</span>
+                                </div>
+                                <div class="info-item">
+                                    <span>Ghế:</span>
+                                    <span>@ticket.SeatNumber</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="price">@ticket.TotalPrice.ToString("N0")đ</div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-data">
+                <p>Chưa có lịch sử giao dịch nào.</p>
+            </div>
+        }
+    </div>
+
+    <!-- Tab 3: Thẻ thành viên -->
+    <div id="membership" class="tab-content">
+        <h2 style="margin-bottom: 30px; color: #333;">Thẻ Thành Viên</h2>
+
+        <div class="member-card">
+            <div class="member-level">@(Model?.MembershipInfo?.MemberLevel?.Name ?? "MEMBER")</div>
+            <div style="font-size: 16px; margin-bottom: 20px;">@(Model?.Customer?.FullName ?? "")</div>
+            <div style="font-size: 24px; font-weight: 700;">@(Model?.MembershipInfo?.CurrentPoints ?? 0) điểm</div>
+
+            
+        </div>
+
+        @if (Model?.MembershipInfo?.PointHistory != null && Model.MembershipInfo.PointHistory.Any())
+        {
+            <div class="point-history">
+                <h4>Lịch Sử Điểm</h4>
+
+                @foreach (var point in Model.MembershipInfo.PointHistory)
+                {
+                    <div class="point-item">
+                        <div>
+                            <div>@point.Description</div>
+                            <div class="point-date">@point.CreatedDate.ToString("dd/MM/yyyy - HH:mm")</div>
+                        </div>
+                        <div class="point-change @(point.IsPositive ? "positive" : "negative")">
+                            @(point.IsPositive ? "+" : "")@point.PointChange điểm
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="no-data">
+                <p>Chưa có lịch sử tích điểm nào.</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Modal xác nhận mật khẩu -->
+<div id="passwordModal" class="modal">
+    <div class="modal-content">
+        <h3>Xác nhận mật khẩu</h3>
+        <form id="passwordForm">
+            @Html.AntiForgeryToken()
+            <div class="form-group">
+                <label>Nhập mật khẩu để xác nhận:</label>
+                <input type="password" id="confirmPassword" name="password" required>
+                <div class="error" id="password-error"></div>
+            </div>
+            <div class="modal-buttons">
+                <button type="button" class="confirm-btn" onclick="updatePersonalInfo()">Xác nhận</button>
+                <button type="button" class="cancel-btn" onclick="closePasswordModal()">Hủy</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let editingFields = [];
+
+    function showTab(tabName) {
+        // Ẩn tất cả tab content
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(content => content.classList.remove('active'));
+
+        // Bỏ active khỏi tất cả tab buttons
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => tab.classList.remove('active'));
+
+        // Hiển thị tab được chọn
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    function enableEdit(fieldName) {
+        const field = document.getElementById(fieldName);
+        const editBtn = field.nextElementSibling;
+
+        if (fieldName === 'gender') {
+            const genderInputs = document.querySelectorAll('input[name="gender"]');
+            genderInputs.forEach(input => input.disabled = false);
+        } else {
+            field.removeAttribute('readonly');
+            field.focus();
+        }
+
+        editBtn.style.display = 'none';
+        editingFields.push(fieldName);
+
+        // Hiển thị nút cập nhật và hủy
+        document.getElementById('updateBtn').style.display = 'inline-block';
+        document.getElementById('cancelBtn').style.display = 'inline-block';
+    }
+
+    function cancelEdit() {
+        editingFields.forEach(fieldName => {
+            const field = document.getElementById(fieldName);
+            const editBtn = field ? field.nextElementSibling : document.querySelector(`button[onclick="enableEdit('${fieldName}')"]`);
+
+            if (fieldName === 'gender') {
+                const genderInputs = document.querySelectorAll('input[name="gender"]');
+                genderInputs.forEach(input => input.disabled = true);
+                editBtn = document.querySelector(`button[onclick="enableEdit('gender')"]`);
+            } else if (field) {
+                field.setAttribute('readonly', true);
+                // Reset về giá trị ban đầu
+                field.value = field.defaultValue;
+            }
+
+            if (editBtn) {
+                editBtn.style.display = 'block';
+            }
+        });
+
+        editingFields = [];
+        document.getElementById('updateBtn').style.display = 'none';
+        document.getElementById('cancelBtn').style.display = 'none';
+
+        // Xóa thông báo lỗi
+        const errorElements = document.querySelectorAll('.error');
+        errorElements.forEach(el => el.textContent = '');
+    }
+
+    function showPasswordModal() {
+        document.getElementById('passwordModal').style.display = 'block';
+    }
+
+    function closePasswordModal() {
+        document.getElementById('passwordModal').style.display = 'none';
+        document.getElementById('confirmPassword').value = '';
+        document.getElementById('password-error').textContent = '';
+    }
+
+    function updatePersonalInfo() {
+        const password = document.getElementById('confirmPassword').value;
+
+        if (!password) {
+            document.getElementById('password-error').textContent = 'Vui lòng nhập mật khẩu';
+            return;
+        }
+
+        const formData = {
+            fullName: document.getElementById('fullName').value,
+            email: document.getElementById('email').value,
+            phone: document.getElementById('phone').value,
+            birthDate: document.getElementById('birthDate').value,
+            gender: document.querySelector('input[name="gender"]:checked')?.value,
+            password: password
+        };
+
+        // Lấy token chống CSRF
+        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+        fetch('@Url.Action("UpdatePersonalInfo", "Auth")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                ...formData,
+                __RequestVerificationToken: token
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Cập nhật thông tin thành công!');
+                closePasswordModal();
+                cancelEdit();
+                // Có thể reload trang để cập nhật thông tin mới
+                location.reload();
+            } else {
+                document.getElementById('password-error').textContent = data.message;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('password-error').textContent = 'Có lỗi xảy ra, vui lòng thử lại';
+        });
+    }
+
+    // Đóng modal khi click bên ngoài
+    window.onclick = function(event) {
+        const modal = document.getElementById('passwordModal');
+        if (event.target === modal) {
+            closePasswordModal();
+        }
+    }
+</script>

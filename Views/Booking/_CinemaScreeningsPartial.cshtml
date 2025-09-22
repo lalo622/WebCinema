@@ -1,0 +1,34 @@
+﻿@model List<WebCinema.ViewModel.Booking.CinemaScreeningViewModel>
+
+@if (Model.Any())
+{
+    foreach (var cinema in Model)
+    {
+        <div class="cinema-card">
+            <div class="cinema-header">
+                <h4 class="cinema-name"><i class="fa fa-map-marker"></i> @cinema.CinemaName</h4>
+                <p class="cinema-address">@cinema.CinemaAddress</p>
+            </div>
+            <div class="screening-times">
+                @foreach (var screening in cinema.ScreeningTimes)
+                {
+                    <a href="@Url.Action("SelectSeat", new { screeningId = screening.ScreeningId })"
+                       class="screening-time-item">
+                        <div class="time">@screening.DisplayTime</div>
+                        <div class="room-info">@screening.RoomName</div>
+                        <div class="seats-info">@($"{screening.AvailableSeats} ghế trống")</div>
+                        <div class="price">@($"{screening.BasePrice.ToString("N0")} VNĐ")</div>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="no-screenings">
+        <i class="fa fa-calendar-times-o"></i>
+        <h4>Không có suất chiếu</h4>
+        <p>Rất tiếc, không có suất chiếu nào cho ngày này. Vui lòng chọn ngày khác.</p>
+    </div>
+}

@@ -1,0 +1,612 @@
+﻿@model WebCinema.ViewModel.PaymentInfoViewModel
+@{
+    ViewBag.Title = "Xác nhận thanh toán";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container payment-container">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Trang chủ</a></li>
+            <li class="breadcrumb-item"><a href="#">Đặt vé</a></li>
+            <li class="breadcrumb-item active">Xác nhận thanh toán</li>
+        </ol>
+    </nav>
+
+    <h2 class="payment-title">Phương thức thanh toán</h2>
+
+    <div class="row">
+        <!-- Thông tin khách hàng -->
+        <div class="col-md-6">
+            <div class="card payment-card">
+                <div class="card-header">
+                    <h4>Thông tin thanh toán</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless customer-info-table">
+                        <tr>
+                            <th>Họ tên</th>
+                            <td>
+                                @if (!string.IsNullOrEmpty(Model.UserName))
+                                {
+                                    @Model.UserName
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa cung cấp</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>
+                                @if (!string.IsNullOrEmpty(Model.Email))
+                                {
+                                    @Model.Email
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa cung cấp</span>
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Điện thoại</th>
+                            <td>
+                                @if (!string.IsNullOrEmpty(Model.Phone))
+                                {
+                                    @Model.Phone
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Chưa cung cấp</span>
+                                }
+                            </td>
+                        </tr>
+                    </table>
+
+                    @if (string.IsNullOrEmpty(Model.UserName) && string.IsNullOrEmpty(Model.Email) && string.IsNullOrEmpty(Model.Phone))
+                    {
+                        <div class="alert alert-warning mt-3">
+                            <i class="fas fa-exclamation-triangle"></i> Bạn chưa cập nhật thông tin cá nhân. Vui lòng kiểm tra trong <a href="@Url.Action("Manage", "Account")">tài khoản</a>.
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Thẻ thành viên và điểm -->
+            @if (Model.CustomerPointInfo != null)
+            {
+                <div class="card payment-card member-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-star text-warning"></i> Thẻ thành viên</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="member-info">
+                            <div class="current-level">
+                                <span class="level-badge level-@(Model.CurrentLevelName.ToLower())">
+                                    @Model.CurrentLevelName
+                                </span>
+                            </div>
+
+                            <div class="points-info mt-3">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="stat-item">
+                                            <div class="stat-number">@Model.CustomerPointInfo.CurrentPoints</div>
+                                            <div class="stat-label">Điểm hiện có</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="stat-item">
+                                            <div class="stat-number">@Model.CustomerPointInfo.TotalSpending.ToString("N0")</div>
+                                            <div class="stat-label">Tổng chi tiêu</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (Model.CustomerPointInfo.NextLevel != null)
+                            {
+                                <div class="progress-to-next mt-3">
+                                    <small class="text-muted">
+                                        Còn <strong>@Model.SpendingToNextLevel.ToString("N0") VNĐ</strong> để lên <strong>@Model.NextLevelName</strong>
+                                    </small>
+                                    <div class="progress mt-1">
+                                        @{
+                                            var progressPercent = (double)(Model.CustomerPointInfo.TotalSpending / Model.CustomerPointInfo.NextLevel.RequiredSpending) * 100;
+                                        }
+                                        <div class="progress-bar bg-warning" style="width: @progressPercent%"></div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="earn-points-info mt-3">
+                                <div class="alert alert-success">
+                                    <i class="fas fa-gift"></i>
+                                    Giao dịch này sẽ tích <strong>@Model.EstimatedEarnedPoints điểm</strong>!
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Thông tin vé -->
+        <div class="col-md-6">
+            <div class="card payment-card">
+                <div class="card-header">
+                    <h4>Thông tin vé</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Phim:</strong> @Model.MovieTitle</p>
+                    <p><strong>Rạp:</strong> @Model.CinemaName - @Model.RoomName</p>
+                    <p><strong>Suất chiếu:</strong> @Model.ShowDate.ToString("dd/MM/yyyy") @Model.StartTime.ToString(@"hh\:mm")</p>
+                    <p><strong>Ghế:</strong> @string.Join(", ", Model.SelectedSeats)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sử dụng điểm -->
+    @if (Model.CustomerPointInfo != null && Model.CustomerPointInfo.CurrentPoints > 0)
+    {
+        <div class="card payment-card points-usage-card">
+            <div class="card-header">
+                <h4><i class="fas fa-coins text-warning"></i> Sử dụng điểm</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="pointsToUse">Số điểm muốn sử dụng (10 điểm = 1,000 VNĐ):</label>
+                            <div class="input-group">
+                                <input type="number"
+                                       id="pointsToUse"
+                                       class="form-control"
+                                       min="0"
+                                       max="@Model.MaxUsablePoints"
+                                       value="0">
+                               
+                            </div>
+                            
+                        </div>
+
+                        <button type="button" id="applyPoints" class="btn btn-warning">
+                            <i class="fas fa-check"></i> Áp dụng điểm
+                        </button>
+
+                        <button type="button" id="clearPoints" class="btn btn-outline-secondary ml-2" style="display: none;">
+                            <i class="fas fa-times"></i> Hủy
+                        </button>
+                    </div>
+
+                  
+                </div>
+            </div>
+        </div>
+    }
+  
+
+    <!-- Tổng tiền và thanh toán -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card payment-card">
+                <div class="card-body">
+                    <div class="payment-summary">
+                        <div class="summary-row">
+                            <span>Tổng tiền vé:</span>
+                            <span id="originalPrice">@Model.TotalPrice.ToString("N0") VNĐ</span>
+                        </div>
+
+                        <div class="summary-row discount-row" id="pointDiscountRow" style="display: none;">
+                            <span>Giảm giá từ điểm:</span>
+                            <span class="text-success">-<span id="pointDiscountDisplay">0</span> VNĐ</span>
+                        </div>
+
+                        <hr>
+
+                        <div class="summary-row final-row">
+                            <span><strong>Thanh toán:</strong></span>
+                            <span class="text-danger"><strong id="finalPrice">@Model.TotalPrice.ToString("N0") VNĐ</strong></span>
+                        </div>
+                    </div>
+
+                    <div class="payment-actions mt-4">
+                        <form action="@Url.Action("CreatePaymentUrl", "Payment")" method="get" class="payment-method-form">
+                            <input type="hidden" name="sessionId" value="@Model.BookingSessionId" />
+
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="vnpay" checked>
+                                    <label class="form-check-label" for="vnpay">
+                                        <img src="~/Content/images/vnpay-logo.jpg" alt="VNPay" style="height: 30px;" />
+                                        Thanh toán qua VNPay
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-payment">
+                                <i class="fas fa-credit-card"></i> Thanh toán ngay
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .payment-title {
+        color: #333;
+        margin-bottom: 30px;
+        font-weight: 600;
+    }
+
+    .payment-card {
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        border: none;
+    }
+
+        .payment-card .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            font-weight: 600;
+        }
+
+    .customer-info-table th {
+        width: 120px;
+        color: #666;
+    }
+
+    /* Member Card Styles */
+    .member-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+        .member-card .card-header {
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+    .level-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .level-đồng {
+        background: #cd7f32;
+        color: white;
+    }
+
+    .level-bạc {
+        background: #c0c0c0;
+        color: #333;
+    }
+
+    .level-vàng {
+        background: #ffd700;
+        color: #333;
+    }
+
+    .level-kim {
+        background: #b9f2ff;
+        color: #333;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: #ffd700;
+    }
+
+    .stat-label {
+        font-size: 12px;
+        opacity: 0.8;
+    }
+
+    .progress {
+        height: 8px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Points Usage Styles */
+    .points-usage-card {
+        border-left: 4px solid #ffc107;
+    }
+
+    .discount-preview {
+        text-align: center;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .discount-amount {
+        font-size: 20px;
+        font-weight: bold;
+        color: #28a745;
+    }
+
+    /* Payment Summary */
+    .payment-summary {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .final-row {
+        font-size: 18px;
+        margin-bottom: 0;
+    }
+
+    .discount-row {
+        color: #28a745;
+    }
+
+    .combo-table, .food-table {
+        margin-top: 15px;
+    }
+
+        .combo-table th, .food-table th {
+            background-color: #f8f9fa;
+        }
+
+    .btn-payment {
+        padding: 12px 30px;
+        font-size: 16px;
+        font-weight: 600;
+        border-radius: 5px;
+        background-color: #dc3545;
+        border-color: #dc3545;
+        width: 100%;
+    }
+
+        .btn-payment:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+    .payment-method-form {
+        width: 100%;
+    }
+
+    .quantity-control {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .quantity {
+        min-width: 30px;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .food-combo-section {
+        margin: 30px 0;
+    }
+
+    .selected-items {
+        margin: 20px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+    }
+</style>
+
+@section Scripts {
+    <script>
+    $(document).ready(function() {
+        var originalPrice = @Model.TotalPrice;
+        var maxPoints = @Model.MaxUsablePoints;
+
+        // Khởi tạo số lượng từ session (nếu có)
+        @foreach (var food in Model.SelectedFoods)
+        {
+            <text>
+            $('span.quantity[data-type="food"][data-id="@food.FoodID"]').text(@food.Quantity);
+            </text>
+        }
+
+        @foreach (var combo in Model.SelectedCombos)
+        {
+            <text>
+            $('span.quantity[data-type="combo"][data-id="@combo.ComboID"]').text(@combo.Quantity);
+            </text>
+        }
+
+        // Xử lý điểm
+        $('#pointsToUse').on('input', function() {
+            var points = parseInt($(this).val()) || 0;
+            var discount = points * 1000;
+            $('#discountAmount').text(discount.toLocaleString() + ' VNĐ');
+        });
+
+        $('#useMaxPoints').click(function() {
+            var maxUsable = Math.min(maxPoints, Math.floor(originalPrice / 1000));
+            $('#pointsToUse').val(maxUsable).trigger('input');
+        });
+
+        $('#applyPoints').click(function() {
+            var pointsToUse = parseInt($('#pointsToUse').val()) || 0;
+
+            if (pointsToUse <= 0) {
+                alert('Vui lòng nhập số điểm hợp lệ');
+                return;
+            }
+
+            $.ajax({
+                url: '@Url.Action("ApplyPoints", "Payment")',
+                type: 'POST',
+                data: {
+                    sessionId: '@Model.BookingSessionId',
+                    pointsToUse: pointsToUse
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#pointDiscountRow').show();
+                        $('#pointDiscountDisplay').text(response.formattedPointDiscount);
+                        $('#finalPrice').text(response.formattedFinalPrice + ' VNĐ');
+                        $('#clearPoints').show();
+                        $('#applyPoints').hide();
+                        $('#pointsToUse').prop('disabled', true);
+                        $('#useMaxPoints').prop('disabled', true);
+
+                        showToast('success', 'Áp dụng điểm thành công!');
+                    } else {
+                        alert('Lỗi: ' + response.message);
+                    }
+                },
+                error: function() {
+                    alert('Có lỗi xảy ra khi áp dụng điểm');
+                }
+            });
+        });
+
+        $('#clearPoints').click(function() {
+            $.ajax({
+                url: '@Url.Action("ApplyPoints", "Payment")',
+                type: 'POST',
+                data: {
+                    sessionId: '@Model.BookingSessionId',
+                    pointsToUse: 0
+                },
+                success: function(response) {
+                    if (response.success) {
+                        $('#pointDiscountRow').hide();
+                        $('#finalPrice').text(originalPrice.toLocaleString() + ' VNĐ');
+                        $('#clearPoints').hide();
+                        $('#applyPoints').show();
+                        $('#pointsToUse').prop('disabled', false).val(0);
+                        $('#useMaxPoints').prop('disabled', false);
+                        $('#discountAmount').text('0 VNĐ');
+
+                        showToast('info', 'Đã hủy sử dụng điểm');
+                    }
+                }
+            });
+        });
+
+        // Xử lý nút +/-
+        $('.plus-btn, .minus-btn').click(function() {
+            var type = $(this).data('type');
+            var id = $(this).data('id');
+            var $quantity = $('span.quantity[data-type="' + type + '"][data-id="' + id + '"]');
+            var current = parseInt($quantity.text());
+
+            if ($(this).hasClass('plus-btn')) {
+                $quantity.text(current + 1);
+            } else if (current > 0) {
+                $quantity.text(current - 1);
+            }
+
+            updateSelectedItems();
+        });
+
+        function updateSelectedItems() {
+            var foods = [];
+            var combos = [];
+
+            // Lấy thông tin đồ ăn đã chọn
+            $('span.quantity[data-type="food"]').each(function() {
+                var quantity = parseInt($(this).text());
+                if (quantity > 0) {
+                    foods.push({
+                        FoodID: $(this).data('id'),
+                        Quantity: quantity
+                    });
+                }
+            });
+
+            // Lấy thông tin combo đã chọn
+            $('span.quantity[data-type="combo"]').each(function() {
+                var quantity = parseInt($(this).text());
+                if (quantity > 0) {
+                    combos.push({
+                        ComboID: $(this).data('id'),
+                        Quantity: quantity
+                    });
+                }
+            });
+
+            // Gửi AJAX cập nhật
+            $.ajax({
+                url: '@Url.Action("UpdateOrder", "Payment")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    sessionId: '@Model.BookingSessionId',
+                    foods: foods,
+                    combos: combos
+                }),
+                success: function(response) {
+                    if (response.success) {
+                        originalPrice = response.totalPrice;
+                        $('#originalPrice').text(response.formattedTotalPrice + ' VNĐ');
+
+                        // Cập nhật final price nếu chưa áp dụng điểm
+                        if ($('#pointDiscountRow').is(':hidden')) {
+                            $('#finalPrice').text(response.formattedTotalPrice + ' VNĐ');
+                        }
+
+                        updateSelectedItemsList();
+                    } else {
+                        alert('Có lỗi xảy ra: ' + response.message);
+                    }
+                },
+                error: function(xhr) {
+                    alert('Lỗi khi cập nhật: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function updateSelectedItemsList() {
+            // Có thể thêm code để cập nhật danh sách đã chọn
+        }
+
+        function showToast(type, message) {
+            // Simple toast notification
+            var toastClass = type === 'success' ? 'alert-success' : type === 'error' ? 'alert-danger' : 'alert-info';
+            var toast = $('<div class="alert ' + toastClass + ' alert-dismissible fade show position-fixed" style="top: 20px; right: 20px; z-index: 9999;">' +
+                         '<span>' + message + '</span>' +
+                         '<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>' +
+                         '</div>');
+
+            $('body').append(toast);
+            setTimeout(function() {
+                toast.alert('close');
+            }, 3000);
+        }
+    });
+    </script>
+}

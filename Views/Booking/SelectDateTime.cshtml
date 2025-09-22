@@ -1,0 +1,163 @@
+﻿@model WebCinema.ViewModel.MovieBookingViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/SelectDateTime.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<div class="movie-booking-container">
+    <!-- Header thông tin phim -->
+    <div class="movie-header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <img src="@Model.MoviePoster" alt="@Model.MovieTitle" class="movie-poster" />
+                </div>
+                <div class="col-md-9">
+                    <h1 class="movie-title">@Model.MovieTitle</h1>
+                    <div class="movie-details">
+                        <span class="duration"><i class="fa fa-clock-o"></i> @Model.MovieDuration</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chọn ngày -->
+    <div class="date-selection-section">
+        <div class="container">
+            <h3 class="section-title"><i class="fa fa-calendar"></i> Chọn ngày chiếu</h3>
+            <div class="date-slider-container">
+                <button class="slider-btn prev-btn" id="prevDate"><i class="fa fa-chevron-left"></i></button>
+                <div class="date-slider" id="dateSlider">
+                    @foreach (var date in Model.AvailableDates)
+                    {
+                        <div class="date-item @(date.IsSelected ? "selected" : "") @(date.IsToday ? "today" : "")"
+                             data-date="@date.Date.ToString("yyyy-MM-dd")">
+                            <div class="date-number">@date.Date.Day</div>
+                            <div class="date-month">Th@(date.Date.Month)</div>
+                            <div class="date-day">@date.DayOfWeek</div>
+                        </div>
+                    }
+                </div>
+                <button class="slider-btn next-btn" id="nextDate"><i class="fa fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Danh sách rạp và suất chiếu -->
+    <div class="cinema-screenings-section">
+        <div class="container">
+            <div id="screeningsContainer">
+                @if (Model.CinemaScreenings.Any())
+                {
+                    <h3 class="section-title">
+                        <i class="fa fa-film"></i> Suất chiếu ngày @Model.SelectedDate.ToString("dd/MM/yyyy")
+                    </h3>
+                    foreach (var cinema in Model.CinemaScreenings)
+                    {
+                        <div class="cinema-card">
+                            <div class="cinema-header">
+                                <h4 class="cinema-name"><i class="fa fa-map-marker"></i> @cinema.CinemaName</h4>
+                                <p class="cinema-address">@cinema.CinemaAddress</p>
+                            </div>
+                            <div class="screening-times">
+                                @foreach (var screening in cinema.ScreeningTimes)
+                                {
+                                    <a href="@Url.Action("SelectSeat", new { screeningId = screening.ScreeningId })"
+                                       class="screening-time-item">
+                                        <div class="time">@screening.DisplayTime</div>
+                                        <div class="room-info">@screening.RoomName</div>
+                                        <div class="seats-info">@($"{screening.AvailableSeats} ghế trống")</div>
+                                        <div class="price">@($"{screening.BasePrice.ToString("N0")} VNĐ")</div>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                else if (!string.IsNullOrEmpty(Request.QueryString["selectedDate"]))
+                {
+                    <div class="no-screenings">
+                        <i class="fa fa-calendar-times-o"></i>
+                        <h4>Không có suất chiếu</h4>
+                        <p>Rất tiếc, không có suất chiếu nào cho ngày này. Vui lòng chọn ngày khác.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="select-date-message">
+                        <i class="fa fa-hand-pointer-o"></i>
+                        <h4>Chọn ngày để xem suất chiếu</h4>
+                        <p>Vui lòng chọn một ngày để xem các suất chiếu có sẵn.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script cuối trang -->
+<script>
+    $(document).ready(function () {
+        var movieId = @Model.MovieId;
+        var selectedDate = '@Model.SelectedDate.ToString("yyyy-MM-dd")';
+
+        $('.date-item').click(function () {
+            var date = $(this).data('date');
+            if (date === selectedDate) return;
+
+            $('.date-item').removeClass('selected');
+            $(this).addClass('selected');
+            selectedDate = date;
+
+            loadScreenings(date);
+        });
+
+        $('#prevDate').click(function () {
+            $('#dateSlider').animate({ scrollLeft: $('#dateSlider').scrollLeft() - 200 }, 300);
+        });
+
+        $('#nextDate').click(function () {
+            $('#dateSlider').animate({ scrollLeft: $('#dateSlider').scrollLeft() + 200 }, 300);
+        });
+
+        var selectedDateItem = $('.date-item.selected');
+        if (selectedDateItem.length > 0) {
+            var sliderContainer = $('#dateSlider');
+            var scrollPosition = selectedDateItem.position().left + sliderContainer.scrollLeft() -
+                sliderContainer.width() / 2 + selectedDateItem.width() / 2;
+            sliderContainer.animate({ scrollLeft: scrollPosition }, 500);
+        }
+
+        function loadScreenings(date) {
+            var container = $('#screeningsContainer');
+            container.html(`
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Đang tải suất chiếu...</p>
+                </div>
+            `);
+            $.ajax({
+                url: '@Url.Action("GetScreeningsByDate", "Booking")',
+                type: 'GET',
+                data: {
+                    movieId: movieId,
+                    selectedDate: date
+                },
+                success: function (response) {
+                    container.html(response);
+                },
+                error: function () {
+                    container.html(`
+                        <div class="no-screenings">
+                            <i class="fa fa-exclamation-triangle"></i>
+                            <h4>Lỗi tải dữ liệu</h4>
+                            <p>Không thể tải suất chiếu. Vui lòng thử lại.</p>
+                        </div>
+                    `);
+                }
+            });
+        }
+    });
+</script>

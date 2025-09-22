@@ -1,0 +1,22 @@
+﻿@model List<WebCinema.ViewModel.TicketHistoryViewModel>
+@{
+    ViewBag.Title = "TicketHistory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Lịch sử đặt vé</h2>
+
+@foreach (var ticket in Model)
+{
+    <div class="ticket-card" style="border:1px solid #ccc; padding:10px; margin-bottom:15px;">
+        <img src="@ticket.MovieImageUrl" alt="Ảnh phim" style="width:150px; height:auto;" />
+        <div>
+            <strong>@ticket.MovieTitle</strong><br />
+            Ngày chiếu: @ticket.ShowDate.ToString("dd/MM/yyyy")<br />
+            Ghế: @ticket.SeatNumber<br />
+            Tổng tiền: @ticket.TotalPrice.ToString("N0") VND
+        </div>
+    </div>
+}
+
+

@@ -1,0 +1,278 @@
+﻿
+.booking-container {
+    background: #fdf6e3; 
+    color: #000;
+    min-height: 100vh;
+    padding-bottom: 50px;
+}
+
+.booking-header {
+    background: #2c2c2c;
+    padding: 20px 0;
+    border-bottom: 2px solid #444;
+}
+
+    .booking-header h2 {
+        margin: 0 0 10px 0;
+        color: #fff;
+    }
+
+.booking-info span {
+    display: inline-block;
+    margin-right: 30px;
+    color: #ccc;
+}
+
+.booking-info i {
+    margin-right: 8px;
+    color: #f39c12;
+}
+
+.booking-timer {
+    background: #e74c3c;
+    padding: 15px 0;
+    text-align: center;
+}
+
+.timer-box {
+    display: inline-block;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.timer-display {
+    font-size: 24px;
+    margin-left: 10px;
+}
+
+.screen-section {
+    padding: 40px 0 20px;
+    text-align: center;
+}
+
+.screen {
+    position: relative;
+    width: 80%;
+    max-width: 600px;
+    height: 20px;
+    margin: 0 auto;
+    background: linear-gradient(to bottom, #fff, #ddd);
+    border-radius: 0 0 50px 50px;
+    box-shadow: 0 3px 10px rgba(255,255,255,0.3);
+}
+
+.screen-label {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ccc;
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+.seat-map-section {
+    padding: 40px 0;
+}
+
+.seat-map {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.seat-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.row-label {
+    width: 30px;
+    text-align: center;
+    font-weight: bold;
+    color: #ccc;
+}
+
+.seats-container {
+    display: flex;
+    gap: 5px;
+    margin: 0 10px;
+}
+
+.seat {
+    width: 35px;
+    height: 35px;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .seat.regular {
+        border-color: #27ae60;
+    }
+
+    .seat.vip {
+        border-color: #f39c12;
+    }
+
+    .seat.couple {
+        border-color: #e91e63;
+        width: 75px;
+    }
+
+    /* Ghế đang được chọn */
+    .seat.selected {
+        border-color: #e74c3c !important;
+        background: #ffecec !important;
+    }
+
+    /* Ghế đã đặt */
+    .seat.occupied {
+        background: #bdc3c7 !important;
+        border-color: #bdc3c7 !important;
+        cursor: not-allowed;
+        color: #888;
+    }
+
+    /* Hover */
+    .seat.available:hover:not(.occupied):not(.selected) {
+        background: #f0f0f0;
+        transform: scale(1.05);
+    }
+
+/* Label chữ ghế */
+.seat-label {
+    font-size: 12px;
+    color: #000;
+}
+
+.seat-legend {
+    background: #fdf6e3;
+    padding: 20px 0;
+    border-top: 1px solid #444;
+}
+
+.legend-items {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.seat-sample {
+    width: 25px;
+    height: 25px;
+    border-radius: 4px;
+    background: #fff;
+    border: 2px solid #ccc;
+}
+
+    .seat-sample.available.regular {
+        border-color: #27ae60;
+    }
+
+    .seat-sample.available.vip {
+        border-color: #f39c12;
+    }
+
+    .seat-sample.available.couple {
+        border-color: #e91e63;
+        width: 50px;
+    }
+
+    .seat-sample.selected {
+        border-color: #e74c3c;
+        background: #ffecec;
+    }
+
+    .seat-sample.occupied {
+        background: #bdc3c7;
+        border-color: #bdc3c7;
+    }
+
+.total-price {
+    color: #f39c12;
+}
+
+.booking-actions {
+    background: #2c2c2c;
+    padding: 30px 0;
+    border-top: 1px solid #444;
+    position: sticky;
+    bottom: 0;
+}
+
+.btn-primary {
+    background: #e74c3c;
+    border-color: #e74c3c;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+    .btn-primary:hover {
+        background: #c0392b;
+        border-color: #c0392b;
+    }
+
+    .btn-primary:disabled {
+        background: #7f8c8d;
+        border-color: #7f8c8d;
+        cursor: not-allowed;
+    }
+
+.btn-default {
+    background: #95a5a6;
+    border-color: #95a5a6;
+    color: #fff;
+    padding: 12px 30px;
+    font-size: 16px;
+    margin-left: 15px;
+}
+
+    .btn-default:hover {
+        background: #7f8c8d;
+        border-color: #7f8c8d;
+        color: #fff;
+    }
+
+@media (max-width: 768px) {
+    .seat {
+        width: 28px;
+        height: 28px;
+        font-size: 10px;
+    }
+
+        .seat.couple {
+            width: 60px;
+        }
+
+    .seats-container {
+        gap: 3px;
+    }
+
+    .legend-items {
+        gap: 15px;
+    }
+
+    .booking-info span {
+        display: block;
+        margin-bottom: 5px;
+    }
+}

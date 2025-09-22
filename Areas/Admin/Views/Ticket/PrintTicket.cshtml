@@ -1,0 +1,267 @@
+﻿@model WebCinema.ViewModel.TicketDetailViewModel
+@{
+    ViewBag.Title = "In vé";
+    Layout = null; // Không dùng layout cho trang in
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>In vé xem phim</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .ticket-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .ticket-header {
+            text-align: center;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .ticket-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .cinema-name {
+            font-size: 16px;
+            color: #666;
+        }
+
+        .ticket-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .info-value {
+            color: #666;
+        }
+
+        .ticket-footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #333;
+            font-size: 12px;
+            color: #888;
+        }
+
+        .print-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Ẩn controls khi in thật */
+        @@media print {
+            .print-controls {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            .ticket-container {
+                box-shadow: none;
+                margin: 0;
+                max-width: none;
+            }
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .ticket-info {
+                grid-template-columns: 1fr;
+            }
+
+            .print-controls {
+                position: relative;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-controls">
+        <button onclick="showPrintDialog()" class="btn btn-primary">
+            <i class="fas fa-print"></i> In vé
+        </button>
+        <a href="@Url.Action("ExportToPdf", new { id = Model.TicketID })" class="btn btn-success" target="_blank">
+            <i class="fas fa-download"></i> Lưu PDF
+        </a>
+        <button onclick="window.close()" class="btn btn-secondary">
+            <i class="fas fa-times"></i> Đóng
+        </button>
+    </div>
+
+    <div class="ticket-container" id="ticketContent">
+        <div class="ticket-header">
+            <div class="ticket-title">VÉ XEM PHIM</div>
+            <div class="cinema-name">CINEMA BOOKING SYSTEM</div>
+        </div>
+
+        <div class="ticket-info">
+            <div class="info-row">
+                <span class="info-label">Mã vé:</span>
+                <span class="info-value">@Model.TicketID</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Khách hàng:</span>
+                <span class="info-value">@Model.CustomerName</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Email:</span>
+                <span class="info-value">@Model.Email</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Điện thoại:</span>
+                <span class="info-value">@Model.Phone</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Phim:</span>
+                <span class="info-value">@Model.MovieTitle</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Suất chiếu:</span>
+                <span class="info-value">@Model.ScreeningTime.ToString(@"hh\:mm")</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Phòng:</span>
+                <span class="info-value">@Model.RoomName</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Ghế:</span>
+                <span class="info-value">@Model.SeatNumber</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Thời gian đặt:</span>
+                <span class="info-value">@(Model.BookingTime?.ToString("dd/MM/yyyy HH:mm") ?? "N/A")</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Tổng tiền:</span>
+                <span class="info-value">@Model.TotalPrice.ToString("N0") đ</span>
+            </div>
+
+            <div class="info-row">
+                <span class="info-label">Trạng thái:</span>
+                <span class="info-value">@(Model.PaymentStatus == 1 ? "Đã thanh toán" : "Chưa thanh toán")</span>
+            </div>
+        </div>
+
+        <div class="ticket-footer">
+            <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi!</p>
+            <p>Vui lòng mang theo vé này khi đến rạp</p>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+    <script>
+        function showPrintDialog() {
+            // Mở dialog in của trình duyệt
+            window.print();
+        }
+
+        // Auto focus khi trang load
+        window.onload = function() {
+            document.body.focus();
+        }
+
+        // Xử lý phím tắt
+        document.addEventListener('keydown', function(e) {
+            // Ctrl + P để in
+            if (e.ctrlKey && e.key === 'p') {
+                e.preventDefault();
+                showPrintDialog();
+            }
+            // ESC để đóng
+            if (e.key === 'Escape') {
+                window.close();
+            }
+        });
+
+        // Thông báo sau khi in (chỉ hiển thị trên một số trình duyệt)
+        window.addEventListener('afterprint', function() {
+            if (confirm('Bạn có muốn tải xuống bản PDF không?')) {
+                window.open('@Url.Action("ExportToPdf", new { id = Model.TicketID })', '_blank');
+            }
+        });
+    </script>
+</body>
+</html>

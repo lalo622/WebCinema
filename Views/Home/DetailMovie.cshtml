@@ -1,0 +1,115 @@
+﻿@{
+    ViewBag.Title = "Chi tiết phim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var movie = ViewBag.CurrentMovie as WebCinema.Models.Movie;
+    var otherMovies = ViewBag.OtherMovies as List<WebCinema.Models.Movie>;
+}
+
+<link href="~/Content/DetailMovie.css" rel="stylesheet" />
+
+<div class="container">
+
+    <header class="movie-trailer-section">
+        <div class="trailer-placeholder">
+            <img src="~/Content/Images/Movies/@movie.ImageURL" alt="@movie.Title" class="trailer-image">
+            <div class="imax-badge">IMAX</div>
+            <div class="release-date">KHởi CHIẾU: @movie.ReleaseDate.ToString("dd.MM.yyyy")</div>
+        </div>
+    </header>
+
+    <main class="movie-detail-content">
+        <div class="movie-info-section">
+            <div class="movie-poster-card">
+                <img src="~/Content/Images/Movies/@movie.ImageURL" alt="@movie.Title Poster" class="movie-poster">
+                <div class="movie-rating">
+                    <i class="fas fa-star"></i> 9.0
+                </div>
+            </div>
+            <div class="movie-details">
+                <h1>@movie.Title</h1>
+                <p class="original-title">@movie.Title.ToUpperInvariant()</p>
+                <p class="genre-duration">@movie.Genre | @movie.Duration phút</p>
+                <div class="ratings">
+                    <span class="censor-rating">@movie.AgeRating</span>
+                </div>
+                <div class="actions">
+                    <a href="@(
+    Session["UserID"] == null
+    ? Url.Action("Login", "Auth")
+    : Url.Action("SelectDateTime", "Booking", new { movieId = movie.MovieID })
+)" class="btn btn-buy-ticket">
+                        <i class="fas fa-ticket-alt"></i> Mua vé
+                    </a>
+                    
+                </div>
+                <div class="movie-meta-buttons">
+                    <button class="meta-btn active" data-target="description-content">Nội dung phim</button>
+                    <button class="meta-btn" data-target="details-content">Thông tin chi tiết</button>
+                </div>
+            </div>
+        </div>
+
+        <aside class="sidebar">
+            <h3>Phim đang chiếu</h3>
+            <div class="now-showing-list">
+                @foreach (var item in otherMovies)
+                {
+                    <div class="now-showing-item">
+                        <a href="@Url.Action("DetailMovie", "Home", new { id = item.MovieID })">
+                            <img src="~/Content/Images/Movies/@item.ImageURL" alt="@item.Title">
+                            <div class="rating-overlay">9.0</div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </aside>
+
+        <section class="movie-content-display">
+            <h2 id="current-content-title">Nội Dung Phim</h2>
+
+            <div id="description-content" class="content-panel active">
+                <p>@movie.Description</p>
+                <p>
+                    Thời lượng: @movie.Duration phút<br />
+                    Khởi chiếu: @movie.ReleaseDate.ToString("dd.MM.yyyy")<br />
+                    Kết thúc: @movie.EndDate.ToString("dd.MM.yyyy")
+                </p>
+            </div>
+
+            <div id="details-content" class="content-panel">
+                <h3>Thông tin chi tiết:</h3>
+                <ul>
+                    <li><strong>Đạo diễn:</strong> @movie.Director</li>
+                    <li><strong>Diễn viên:</strong> @movie.Cast</li>
+                    <li><strong>Thể loại:</strong> @movie.Genre</li>
+                    <li><strong>Độ tuổi:</strong> @movie.AgeRating</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const metaButtons = document.querySelectorAll('.movie-meta-buttons .meta-btn');
+        const contentPanels = document.querySelectorAll('.movie-content-display .content-panel');
+        const currentContentTitle = document.getElementById('current-content-title');
+
+        metaButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                metaButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                const targetId = this.dataset.target;
+                const buttonText = this.textContent;
+                currentContentTitle.textContent = buttonText;
+                contentPanels.forEach(panel => panel.classList.remove('active'));
+                const targetPanel = document.getElementById(targetId);
+                if (targetPanel) {
+                    targetPanel.classList.add('active');
+                }
+            });
+        });
+    });
+</script>
